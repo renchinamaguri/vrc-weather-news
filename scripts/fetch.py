@@ -220,7 +220,7 @@ def fetch_city(city: dict, tz: str, tomorrow: date) -> dict:
     return w
 
 
-def fetch_news(feed: dict, limit: int) -> list:
+def fetch_news(feed: dict, limit: int, exclude=()) -> list:
     root = ET.fromstring(get(feed["url"]))
     items = []
     for it in root.iter("item"):  # RSS 2.0（Googleニュースは「見出し - 媒体名」形式）
@@ -228,7 +228,10 @@ def fetch_news(feed: dict, limit: int) -> list:
         src = (it.findtext("source") or "").strip() or feed["name"]
         if src and title.endswith(" - " + src):
             title = title[: -len(src) - 3].rstrip()
-        if title:
+        for sep in (" | ", "｜", " - "):  # サイト名の付属部分を落とす
+            if sep in title and len(title.split(sep)[0]) >= 8:
+                title = title.split(sep)[0].strip()
+        if title and not any(x in title for x in exclude):
             items.append({"title": title, "source": src, "area": feed["name"]})
     if not items:  # Atom
         ns = {"a": "http://www.w3.org/2005/Atom"}
@@ -329,7 +332,7 @@ def main() -> int:
             errors.append(f"jma alerts: {e}")
     for f in ncfg.get("feeds", []):
         try:
-            news.extend(fetch_news(f, limit))
+            news.extend(fetch_news(f, limit, ncfg.get("exclude", [])))
         except Exception as e:
             errors.append(f"news {f['name']}: {e}")
     seen_t, uniq = set(), []
