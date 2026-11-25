@@ -32,8 +32,8 @@
       "jma_office": "160000",
       "jma_area": "160010",
       "jma_point": "富山",
-      "map_dx": 52,
-      "map_dy": -26
+      "map_dx": 48,
+      "map_dy": -24
     },
     {
       "name": "高岡",
@@ -43,7 +43,7 @@
       "jma_area": "160020",
       "jma_point": "伏木",
       "map_dx": 0,
-      "map_dy": 22
+      "map_dy": 20
     },
     {
       "name": "金沢",
@@ -52,8 +52,8 @@
       "jma_office": "170000",
       "jma_area": "170010",
       "jma_point": "金沢",
-      "map_dx": -30,
-      "map_dy": -58
+      "map_dx": -28,
+      "map_dy": -54
     },
     {
       "name": "七尾",
@@ -62,8 +62,8 @@
       "jma_office": "170000",
       "jma_area": "170020",
       "jma_point": "輪島",
-      "map_dx": -9,
-      "map_dy": -68
+      "map_dx": -8,
+      "map_dy": -63
     },
     {
       "name": "福井",
@@ -83,16 +83,28 @@
     }
   ],
   "news": {
-    "jma_alerts": {
-      "offices": [
-        "新潟地方気象台",
-        "富山地方気象台",
-        "金沢地方気象台",
-        "福井地方気象台"
-      ],
-      "per_office": 2
-    },
-    "feeds": [],
-    "max_items": 6
+    "feeds": [
+      {
+        "name": "新潟",
+        "url": "https://news.google.com/rss/search?q=新潟県+when:1d&hl=ja&gl=JP&ceid=JP:ja",
+        "limit": 2
+      },
+      {
+        "name": "富山",
+        "url": "https://news.google.com/rss/search?q=富山県+when:1d&hl=ja&gl=JP&ceid=JP:ja",
+        "limit": 2
+      },
+      {
+        "name": "石川",
+        "url": "https://news.google.com/rss/search?q=石川県+when:1d&hl=ja&gl=JP&ceid=JP:ja",
+        "limit": 2
+      },
+      {
+        "name": "福井",
+        "url": "https://news.google.com/rss/search?q=福井県+when:1d&hl=ja&gl=JP&ceid=JP:ja",
+        "limit": 2
+      }
+    ],
+    "max_items": 8
   }
 }
