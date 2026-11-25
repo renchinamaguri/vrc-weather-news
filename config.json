@@ -32,8 +32,8 @@
       "jma_office": "160000",
       "jma_area": "160010",
       "jma_point": "富山",
-      "map_dx": 80,
-      "map_dy": 4
+      "map_dx": 52,
+      "map_dy": -26
     },
     {
       "name": "高岡",
@@ -42,8 +42,8 @@
       "jma_office": "160000",
       "jma_area": "160020",
       "jma_point": "伏木",
-      "map_dx": -17,
-      "map_dy": -6
+      "map_dx": 0,
+      "map_dy": 22
     },
     {
       "name": "金沢",
@@ -52,8 +52,8 @@
       "jma_office": "170000",
       "jma_area": "170010",
       "jma_point": "金沢",
-      "map_dx": -20,
-      "map_dy": -10
+      "map_dx": -30,
+      "map_dy": -58
     },
     {
       "name": "七尾",
@@ -62,8 +62,8 @@
       "jma_office": "170000",
       "jma_area": "170020",
       "jma_point": "輪島",
-      "map_dx": 0,
-      "map_dy": 45
+      "map_dx": -9,
+      "map_dy": -68
     },
     {
       "name": "福井",
