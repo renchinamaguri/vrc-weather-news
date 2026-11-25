@@ -186,6 +186,8 @@ def fetch_city(city: dict, tz: str, tomorrow: date) -> dict:
     cur, day = om["current"], om["daily"]
     w = {
         "name": city["name"],
+        "lat": city["lat"], "lon": city["lon"],
+        "dx": city.get("map_dx", 0), "dy": city.get("map_dy", 0),  # 地図上の表示位置の微調整(px)
         "temp": round(cur["temperature_2m"], 1),
         "humidity": cur["relative_humidity_2m"],
         "wind": round(cur["wind_speed_10m"], 1),
@@ -233,6 +235,43 @@ def fetch_news(feed: dict, limit: int) -> list:
     return items[:limit]
 
 
+# ------------------------------------------------------------------ 気象庁 防災気象情報（北陸）
+JMA_FEED = "https://www.data.jma.go.jp/developer/xml/feed/extra.xml"
+ATOM = "{http://www.w3.org/2005/Atom}"
+
+
+def fetch_jma_alerts(offices: list, per_office: int, limit: int) -> list:
+    root = ET.fromstring(get(JMA_FEED, timeout=30))
+    found = []
+    seen = set()
+    for e in root.findall(ATOM + "entry"):
+        office = (e.findtext(f"{ATOM}author/{ATOM}name") or "").strip()
+        if office not in offices:
+            continue
+        title = (e.findtext(ATOM + "title") or "").strip()
+        text = (e.findtext(ATOM + "content") or "").strip()
+        if not text or "解説" in title:
+            continue
+        # 【石川県気象警報・注意報】を取り、先頭の見出し語として県名を残す
+        text = text.replace("【", "").replace("】", " ")
+        key = (office, text)
+        if key in seen:
+            continue
+        seen.add(key)
+        found.append({"office": office, "updated": e.findtext(ATOM + "updated") or "", "text": text})
+    found.sort(key=lambda x: x["updated"], reverse=True)
+    out, count = [], {}
+    for f in found:
+        if count.get(f["office"], 0) >= per_office:
+            continue
+        count[f["office"]] = count.get(f["office"], 0) + 1
+        t = f["text"]
+        if len(t) > 70:
+            t = t[:69] + "…"
+        out.append({"title": t, "source": f["office"]})
+    return out[:limit]
+
+
 # ------------------------------------------------------------------ 表示テキスト
 def fmt(v, unit=""):
     return "-" if v is None else f"{v}{unit}"
@@ -242,6 +281,11 @@ def weather_line(w: dict) -> str:
     return (f"<b>{w['name']}</b>  {w['desc']}  {w['temp']}℃  "
             f"<size=80%>最高{fmt(w['today_max'],'°')} / 最低{fmt(w['today_min'],'°')}  "
             f"降水{fmt(w['today_pop'],'%')}  湿度{w['humidity']}%  風{w['wind']}m/s</size>")
+
+
+def now_line(w: dict) -> str:
+    return (f"<b>{w['name']}</b>  {w['desc']}  {w['temp']}℃  "
+            f"<size=80%>{fmt(w['today_max'],'°')}/{fmt(w['today_min'],'°')}  降水{fmt(w['today_pop'],'%')}</size>")
 
 
 def forecast_line(w: dict, compact: bool = False) -> str:
@@ -273,17 +317,25 @@ def main() -> int:
     news = []
     ncfg = CONFIG.get("news", {})
     limit = ncfg.get("max_items", 8)
+    jcfg = ncfg.get("jma_alerts")
+    if jcfg:
+        try:
+            news.extend(fetch_jma_alerts(jcfg["offices"], jcfg.get("per_office", 2), limit))
+        except Exception as e:
+            errors.append(f"jma alerts: {e}")
     for f in ncfg.get("feeds", []):
         try:
             news.extend(fetch_news(f, limit))
         except Exception as e:
             errors.append(f"news {f['name']}: {e}")
     news = news[:limit]
+    if not news and jcfg:
+        news = [{"title": "現在、北陸に発表中の気象情報はありません", "source": "気象庁"}]
 
     wd = "月火水木金土日"[tomorrow.weekday()]
     credit = "Weather data by Open-Meteo.com (CC BY 4.0)"
     if any(w["tomorrow"]["source"] == "JMA" for w in weather):
-        credit = "明日の予報: 気象庁 / 現在の天気: Open-Meteo.com (CC BY 4.0)"
+        credit = "明日の予報・防災気象情報: 気象庁 / 現在の天気: Open-Meteo.com (CC BY 4.0)"
 
     data = {
         "updated": now.strftime("%Y-%m-%d %H:%M"),
@@ -292,6 +344,8 @@ def main() -> int:
         "weather": weather,
         "news": news,
         "weather_text": "\n".join(weather_line(w) for w in weather) or "天気を取得できませんでした",
+        "list_now": "\n".join(now_line(w) for w in weather) or "天気を取得できませんでした",
+        "list_tomorrow": "\n".join(forecast_line(w, True) for w in weather) or "予報を取得できませんでした",
         "forecast_title": f"明日 {tomorrow.month}/{tomorrow.day}({wd}) の天気",
         "forecast_text": "\n".join(forecast_line(w, len(weather) > 5) for w in weather) or "予報を取得できませんでした",
         "news_text": "\n".join(f"・{n['title']}" for n in news) or "ニュースを取得できませんでした",
