@@ -222,17 +222,20 @@ def fetch_city(city: dict, tz: str, tomorrow: date) -> dict:
 def fetch_news(feed: dict, limit: int) -> list:
     root = ET.fromstring(get(feed["url"]))
     items = []
-    for it in root.iter("item"):  # RSS 2.0
+    for it in root.iter("item"):  # RSS 2.0（Googleニュースは「見出し - 媒体名」形式）
         title = (it.findtext("title") or "").strip()
+        src = (it.findtext("source") or "").strip() or feed["name"]
+        if src and title.endswith(" - " + src):
+            title = title[: -len(src) - 3].rstrip()
         if title:
-            items.append({"title": title, "source": feed["name"]})
+            items.append({"title": title, "source": src, "area": feed["name"]})
     if not items:  # Atom
         ns = {"a": "http://www.w3.org/2005/Atom"}
         for e in root.findall("a:entry", ns):
             title = (e.findtext("a:title", default="", namespaces=ns) or "").strip()
             if title:
-                items.append({"title": title, "source": feed["name"]})
-    return items[:limit]
+                items.append({"title": title, "source": feed["name"], "area": feed["name"]})
+    return items[: feed.get("limit", limit)]
 
 
 # ------------------------------------------------------------------ 気象庁 防災気象情報（北陸）
@@ -328,14 +331,22 @@ def main() -> int:
             news.extend(fetch_news(f, limit))
         except Exception as e:
             errors.append(f"news {f['name']}: {e}")
-    news = news[:limit]
+    seen_t, uniq = set(), []
+    for n in news:
+        if len(n["title"]) > 44:
+            n["title"] = n["title"][:43] + "…"
+        if n["title"] in seen_t:
+            continue
+        seen_t.add(n["title"])
+        uniq.append(n)
+    news = uniq[:limit]
     if not news and jcfg:
         news = [{"title": "現在、北陸に発表中の気象情報はありません", "source": "気象庁"}]
 
     wd = "月火水木金土日"[tomorrow.weekday()]
     credit = "Weather data by Open-Meteo.com (CC BY 4.0)"
     if any(w["tomorrow"]["source"] == "JMA" for w in weather):
-        credit = "明日の予報・防災気象情報: 気象庁 / 現在の天気: Open-Meteo.com (CC BY 4.0)"
+        credit = "明日の予報: 気象庁 / 現在の天気: Open-Meteo.com (CC BY 4.0) / ニュース: Googleニュース / 地図: 地球地図日本"
 
     data = {
         "updated": now.strftime("%Y-%m-%d %H:%M"),
@@ -348,7 +359,7 @@ def main() -> int:
         "list_tomorrow": "\n".join(forecast_line(w, True) for w in weather) or "予報を取得できませんでした",
         "forecast_title": f"明日 {tomorrow.month}/{tomorrow.day}({wd}) の天気",
         "forecast_text": "\n".join(forecast_line(w, len(weather) > 5) for w in weather) or "予報を取得できませんでした",
-        "news_text": "\n".join(f"・{n['title']}" for n in news) or "ニュースを取得できませんでした",
+        "news_text": "\n".join(f"<color=#8FD3FF>[{n.get('area', '')}]</color> {n['title']}" if n.get("area") else f"・{n['title']}" for n in news) or "ニュースを取得できませんでした",
         "credit": credit,
         "errors": errors,
     }
