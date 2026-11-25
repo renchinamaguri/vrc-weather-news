@@ -232,7 +232,8 @@ def fetch_news(feed: dict, limit: int, exclude=()) -> list:
             if sep in title and len(title.split(sep)[0]) >= 8:
                 title = title.split(sep)[0].strip()
         if title and not any(x in title for x in exclude):
-            items.append({"title": title, "source": src, "area": feed["name"]})
+            items.append({"title": title, "source": src, "area": feed["name"],
+                          "link": (it.findtext("link") or "").strip()})
     if not items:  # Atom
         ns = {"a": "http://www.w3.org/2005/Atom"}
         for e in root.findall("a:entry", ns):
@@ -240,6 +241,117 @@ def fetch_news(feed: dict, limit: int, exclude=()) -> list:
             if title:
                 items.append({"title": title, "source": feed["name"], "area": feed["name"]})
     return items[: feed.get("limit", limit)]
+
+
+
+# ------------------------------------------------------------------ 記事ページから画像と冒頭を取る
+import html as _html
+import re
+import urllib.parse
+
+IMG_DIR = OUT_DIR / "img"
+THUMB_W, THUMB_H = 640, 177
+
+
+def _pil():
+    try:
+        from PIL import Image
+    except ImportError:  # Actions の標準環境には無いので入れる
+        import subprocess
+        subprocess.run([sys.executable, "-m", "pip", "install", "--quiet", "pillow"], check=True)
+        from PIL import Image
+    return Image
+
+
+def decode_gnews(link: str) -> str:
+    """Googleニュースの転送URLから元記事のURLを取り出す。失敗したら空文字。"""
+    try:
+        u = urllib.parse.urlparse(link)
+        if u.netloc != "news.google.com":
+            return link
+        b64 = u.path.rstrip("/").split("/")[-1]
+        page = get(f"https://news.google.com/articles/{b64}", timeout=20).decode("utf-8", "replace")
+        sg = re.search(r'data-n-a-sg="([^"]+)"', page)
+        ts = re.search(r'data-n-a-ts="([^"]+)"', page)
+        if not sg or not ts:
+            return ""
+        inner = ('["garturlreq",[["X","X",["X","X"],null,null,1,1,"US:en",null,1,null,null,null,null,null,0,1],'
+                 f'"X","X",1,[1,1,1],1,1,null,0,0,null,0],"{b64}",{ts.group(1)},"{sg.group(1)}"]')
+        body = urllib.parse.urlencode({"f.req": json.dumps([[["Fbv4je", inner]]])}).encode()
+        req = urllib.request.Request(
+            "https://news.google.com/_/DotsSplashUi/data/batchexecute", data=body,
+            headers={**UA, "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"})
+        with urllib.request.urlopen(req, timeout=20) as r:
+            txt = r.read().decode("utf-8", "replace")
+        parsed = json.loads(txt.split("\n\n")[1])[:-2]
+        return json.loads(parsed[0][2])[1]
+    except Exception as e:
+        print("WARN: gnews decode:", repr(e), file=sys.stderr)
+        return ""
+
+
+def _meta(page: str, *names) -> str:
+    for n in names:
+        for pat in (rf'<meta[^>]+(?:property|name)=["\']{n}["\'][^>]*content=["\']([^"\']*)["\']',
+                    rf'<meta[^>]+content=["\']([^"\']*)["\'][^>]*(?:property|name)=["\']{n}["\']'):
+            m = re.search(pat, page, re.I)
+            if m and m.group(1).strip():
+                return _html.unescape(m.group(1)).strip()
+    return ""
+
+
+def enrich(item: dict, idx: int) -> None:
+    """item に body と image(0/1) を足す。取れなければ空。"""
+    item["body"], item["image"] = "", 0
+    url = decode_gnews(item.get("link", ""))
+    if not url:
+        return
+    raw = get(url, timeout=25)[:600000]
+    m = re.search(rb'charset=["\']?([\w-]+)', raw[:4000])
+    page = raw.decode(m.group(1).decode() if m else "utf-8", "replace")
+    desc = _meta(page, "og:description", "description")
+    desc = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", "", desc))
+    item["body"] = desc[:110] + ("…" if len(desc) > 110 else "")
+    img = _meta(page, "og:image", "twitter:image")
+    if img:
+        img = urllib.parse.urljoin(url, img)
+        try:
+            data = get(img, timeout=25)
+            if len(data) <= 8_000_000:
+                import io
+                Image = _pil()
+                im = Image.open(io.BytesIO(data)).convert("RGB")
+                w, h = im.size
+                th = w * THUMB_H / THUMB_W
+                if th <= h:  # 縦が余る → 上寄りで切る
+                    top = int((h - th) * 0.3)
+                    im = im.crop((0, top, w, top + int(th)))
+                else:
+                    tw = h * THUMB_W / THUMB_H
+                    left = int((w - tw) / 2)
+                    im = im.crop((left, 0, left + int(tw), h))
+                im = im.resize((THUMB_W, THUMB_H), Image.LANCZOS)
+                IMG_DIR.mkdir(parents=True, exist_ok=True)
+                im.save(IMG_DIR / f"n{idx}.jpg", "JPEG", quality=80)
+                item["image"] = 1
+        except Exception as e:
+            print("WARN: image:", repr(e), file=sys.stderr)
+
+
+def pick_best(cands: list, idx: int) -> dict:
+    """候補のうち、画像が取れた最初の記事を採用（無ければ先頭）。"""
+    first = None
+    for c in cands[:3]:
+        try:
+            enrich(c, idx)
+        except Exception as e:
+            print("WARN: enrich:", repr(e), file=sys.stderr)
+            c.setdefault("body", ""); c.setdefault("image", 0)
+        if first is None:
+            first = c
+        if c.get("image"):
+            return c
+    return first
 
 
 # ------------------------------------------------------------------ 気象庁 防災気象情報（北陸）
@@ -330,15 +442,24 @@ def main() -> int:
             news.extend(fetch_jma_alerts(jcfg["offices"], jcfg.get("per_office", 2), limit))
         except Exception as e:
             errors.append(f"jma alerts: {e}")
-    for f in ncfg.get("feeds", []):
+    if IMG_DIR.exists():
+        for old in IMG_DIR.glob("*.jpg"):
+            old.unlink()
+    for idx, f in enumerate(ncfg.get("feeds", [])):
         try:
-            news.extend(fetch_news(f, limit, ncfg.get("exclude", [])))
+            cands = fetch_news(dict(f, limit=6), 6, ncfg.get("exclude", []))
+            if cands:
+                best = pick_best(cands, idx)
+                if best:
+                    best["idx"] = idx
+                    news.append(best)
         except Exception as e:
             errors.append(f"news {f['name']}: {e}")
     seen_t, uniq = set(), []
     for n in news:
-        if len(n["title"]) > 44:
-            n["title"] = n["title"][:43] + "…"
+        if len(n["title"]) > 70:
+            n["title"] = n["title"][:69] + "…"
+        n.pop("link", None)
         if n["title"] in seen_t:
             continue
         seen_t.add(n["title"])
