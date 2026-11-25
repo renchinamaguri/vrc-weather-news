@@ -46,6 +46,7 @@ def wmo_category(c: int) -> int:
 
 
 def get(url: str, timeout: int = 20) -> bytes:
+    url = urllib.parse.quote(url, safe=":/?&=+%")  # 日本語を含むURLも通す
     req = urllib.request.Request(url, headers=UA)
     with urllib.request.urlopen(req, timeout=timeout) as r:
         return r.read()
