@@ -1,13 +1,85 @@
 {
   "timezone": "Asia/Tokyo",
   "cities": [
-    { "name": "東京", "lat": 35.6895, "lon": 139.6917 },
-    { "name": "大阪", "lat": 34.6937, "lon": 135.5023 },
-    { "name": "札幌", "lat": 43.0618, "lon": 141.3545 }
+    {
+      "name": "新潟",
+      "lat": 37.9162,
+      "lon": 139.0364,
+      "jma_office": "150000",
+      "jma_area": "150010",
+      "jma_point": "新潟"
+    },
+    {
+      "name": "長岡",
+      "lat": 37.4463,
+      "lon": 138.8513,
+      "jma_office": "150000",
+      "jma_area": "150020",
+      "jma_point": "長岡"
+    },
+    {
+      "name": "上越",
+      "lat": 37.1476,
+      "lon": 138.2361,
+      "jma_office": "150000",
+      "jma_area": "150030",
+      "jma_point": "高田"
+    },
+    {
+      "name": "富山",
+      "lat": 36.6953,
+      "lon": 137.2113,
+      "jma_office": "160000",
+      "jma_area": "160010",
+      "jma_point": "富山"
+    },
+    {
+      "name": "高岡",
+      "lat": 36.7543,
+      "lon": 137.0254,
+      "jma_office": "160000",
+      "jma_area": "160020",
+      "jma_point": "伏木"
+    },
+    {
+      "name": "金沢",
+      "lat": 36.5613,
+      "lon": 136.6562,
+      "jma_office": "170000",
+      "jma_area": "170010",
+      "jma_point": "金沢"
+    },
+    {
+      "name": "七尾",
+      "lat": 37.043,
+      "lon": 136.9686,
+      "jma_office": "170000",
+      "jma_area": "170020",
+      "jma_point": "輪島"
+    },
+    {
+      "name": "福井",
+      "lat": 36.0652,
+      "lon": 136.2216,
+      "jma_office": "180000",
+      "jma_area": "180010",
+      "jma_point": "福井"
+    },
+    {
+      "name": "敦賀",
+      "lat": 35.645,
+      "lon": 136.0555,
+      "jma_office": "180000",
+      "jma_area": "180020",
+      "jma_point": "敦賀"
+    }
   ],
   "news": {
     "feeds": [
-      { "name": "NHK 主要ニュース", "url": "https://www3.nhk.or.jp/rss/news/cat0.xml" }
+      {
+        "name": "NHK 主要ニュース",
+        "url": "https://www3.nhk.or.jp/rss/news/cat0.xml"
+      }
     ],
     "max_items": 8
   }
