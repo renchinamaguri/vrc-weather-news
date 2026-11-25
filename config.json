@@ -7,7 +7,9 @@
       "lon": 139.0364,
       "jma_office": "150000",
       "jma_area": "150010",
-      "jma_point": "新潟"
+      "jma_point": "新潟",
+      "map_dx": 0,
+      "map_dy": 0
     },
     {
       "name": "長岡",
@@ -15,7 +17,9 @@
       "lon": 138.8513,
       "jma_office": "150000",
       "jma_area": "150020",
-      "jma_point": "長岡"
+      "jma_point": "長岡",
+      "map_dx": -14,
+      "map_dy": -16
     },
     {
       "name": "上越",
@@ -23,7 +27,9 @@
       "lon": 138.2361,
       "jma_office": "150000",
       "jma_area": "150030",
-      "jma_point": "高田"
+      "jma_point": "高田",
+      "map_dx": -17,
+      "map_dy": -11
     },
     {
       "name": "富山",
@@ -32,8 +38,8 @@
       "jma_office": "160000",
       "jma_area": "160010",
       "jma_point": "富山",
-      "map_dx": 48,
-      "map_dy": -24
+      "map_dx": 83,
+      "map_dy": -44
     },
     {
       "name": "高岡",
@@ -42,8 +48,8 @@
       "jma_office": "160000",
       "jma_area": "160020",
       "jma_point": "伏木",
-      "map_dx": 0,
-      "map_dy": 20
+      "map_dx": 11,
+      "map_dy": 60
     },
     {
       "name": "金沢",
@@ -52,8 +58,8 @@
       "jma_office": "170000",
       "jma_area": "170010",
       "jma_point": "金沢",
-      "map_dx": -28,
-      "map_dy": -54
+      "map_dx": -54,
+      "map_dy": -95
     },
     {
       "name": "七尾",
@@ -63,7 +69,7 @@
       "jma_area": "170020",
       "jma_point": "輪島",
       "map_dx": -8,
-      "map_dy": -63
+      "map_dy": -112
     },
     {
       "name": "福井",
@@ -71,7 +77,9 @@
       "lon": 136.2216,
       "jma_office": "180000",
       "jma_area": "180010",
-      "jma_point": "福井"
+      "jma_point": "福井",
+      "map_dx": 45,
+      "map_dy": -27
     },
     {
       "name": "敦賀",
@@ -79,32 +87,46 @@
       "lon": 136.0555,
       "jma_office": "180000",
       "jma_area": "180020",
-      "jma_point": "敦賀"
+      "jma_point": "敦賀",
+      "map_dx": -26,
+      "map_dy": -43
     }
   ],
   "news": {
     "feeds": [
       {
         "name": "新潟",
-        "url": "https://news.google.com/rss/search?q=%E6%96%B0%E6%BD%9F%E7%9C%8C+when:1d&hl=ja&gl=JP&ceid=JP:ja",
+        "url": "https://news.google.com/rss/search?q=%E6%96%B0%E6%BD%9F%E7%9C%8C%20-%E9%9B%A8%E9%9B%B2%20-%E3%83%AC%E3%83%BC%E3%83%80%E3%83%BC%20-%E5%A4%A9%E6%B0%97%20-%E6%B0%97%E8%B1%A1%20-%E4%BA%88%E5%A0%B1%20when%3A1d&hl=ja&gl=JP&ceid=JP:ja",
         "limit": 2
       },
       {
         "name": "富山",
-        "url": "https://news.google.com/rss/search?q=%E5%AF%8C%E5%B1%B1%E7%9C%8C+when:1d&hl=ja&gl=JP&ceid=JP:ja",
+        "url": "https://news.google.com/rss/search?q=%E5%AF%8C%E5%B1%B1%E7%9C%8C%20-%E9%9B%A8%E9%9B%B2%20-%E3%83%AC%E3%83%BC%E3%83%80%E3%83%BC%20-%E5%A4%A9%E6%B0%97%20-%E6%B0%97%E8%B1%A1%20-%E4%BA%88%E5%A0%B1%20when%3A1d&hl=ja&gl=JP&ceid=JP:ja",
         "limit": 2
       },
       {
         "name": "石川",
-        "url": "https://news.google.com/rss/search?q=%E7%9F%B3%E5%B7%9D%E7%9C%8C+when:1d&hl=ja&gl=JP&ceid=JP:ja",
+        "url": "https://news.google.com/rss/search?q=%E7%9F%B3%E5%B7%9D%E7%9C%8C%20-%E9%9B%A8%E9%9B%B2%20-%E3%83%AC%E3%83%BC%E3%83%80%E3%83%BC%20-%E5%A4%A9%E6%B0%97%20-%E6%B0%97%E8%B1%A1%20-%E4%BA%88%E5%A0%B1%20when%3A1d&hl=ja&gl=JP&ceid=JP:ja",
         "limit": 2
       },
       {
         "name": "福井",
-        "url": "https://news.google.com/rss/search?q=%E7%A6%8F%E4%BA%95%E7%9C%8C+when:1d&hl=ja&gl=JP&ceid=JP:ja",
+        "url": "https://news.google.com/rss/search?q=%E7%A6%8F%E4%BA%95%E7%9C%8C%20-%E9%9B%A8%E9%9B%B2%20-%E3%83%AC%E3%83%BC%E3%83%80%E3%83%BC%20-%E5%A4%A9%E6%B0%97%20-%E6%B0%97%E8%B1%A1%20-%E4%BA%88%E5%A0%B1%20when%3A1d&hl=ja&gl=JP&ceid=JP:ja",
         "limit": 2
       }
     ],
-    "max_items": 8
+    "max_items": 8,
+    "exclude": [
+      "雨雲",
+      "レーダー",
+      "天気",
+      "気象",
+      "予報",
+      "警報",
+      "注意報",
+      "気温",
+      "降水",
+      "ライブカメラ"
+    ]
   }
 }
