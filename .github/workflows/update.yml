@@ -2,7 +2,7 @@ name: Update weather & news
 
 on:
   schedule:
-    - cron: "*/30 * * * *"   # 30分ごと（GitHubの混雑で数分〜十数分遅れることがあります）
+    - cron: "*/30 * * * *"   # 30分ごと
   workflow_dispatch:          # 手動実行ボタン
   push:
     branches: [main]
@@ -15,14 +15,11 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
-  build-deploy:
+  build:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -34,5 +31,13 @@ jobs:
       - uses: actions/upload-pages-artifact@v3
         with:
           path: public
-      - id: deploy
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
         uses: actions/deploy-pages@v4
