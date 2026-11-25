@@ -31,7 +31,9 @@
       "lon": 137.2113,
       "jma_office": "160000",
       "jma_area": "160010",
-      "jma_point": "富山"
+      "jma_point": "富山",
+      "map_dx": 34,
+      "map_dy": 4
     },
     {
       "name": "高岡",
@@ -39,7 +41,9 @@
       "lon": 137.0254,
       "jma_office": "160000",
       "jma_area": "160020",
-      "jma_point": "伏木"
+      "jma_point": "伏木",
+      "map_dx": -62,
+      "map_dy": -6
     },
     {
       "name": "金沢",
@@ -75,12 +79,16 @@
     }
   ],
   "news": {
-    "feeds": [
-      {
-        "name": "NHK 主要ニュース",
-        "url": "https://www3.nhk.or.jp/rss/news/cat0.xml"
-      }
-    ],
-    "max_items": 8
+    "jma_alerts": {
+      "offices": [
+        "新潟地方気象台",
+        "富山地方気象台",
+        "金沢地方気象台",
+        "福井地方気象台"
+      ],
+      "per_office": 2
+    },
+    "feeds": [],
+    "max_items": 6
   }
 }
