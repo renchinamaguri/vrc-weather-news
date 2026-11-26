@@ -252,13 +252,27 @@ def build_image(s: dict, fetch=_http) -> tuple:
 
 def build_all(cfg: dict, out_dir: Path, cache_dir: Path, fetch=_http) -> tuple:
     """スポットを取得し、画像を public/img/s000.jpg… に書く。(spots, errors, dropped) を返す。"""
+    _pip("PIL", "pillow")  # Actions の標準環境には無いので入れる
+    _pip("qrcode", "qrcode")
     errors, raw = [], []
     for m in cfg.get("maps", []):
+        kc = cache_dir / f"kml_{m['kind']}.kml"
         try:
             data = fetch(f"https://www.google.com/maps/d/kml?mid={m['mid']}&forcekml=1", 40)
-            raw += parse_kml(data, m["kind"])
+            got = parse_kml(data, m["kind"])
+            # 荒らし・誤削除対策: 前回より半分以下に減ったら、前回の正常なデータを使う
+            prev = parse_kml(kc.read_bytes(), m["kind"]) if kc.exists() else []
+            if prev and len(got) < len(prev) * 0.5:
+                errors.append(f"spots {m.get('label', m['kind'])}: {len(prev)}件→{len(got)}件に急減したため前回のデータを使用")
+                got = prev
+            else:
+                cache_dir.mkdir(parents=True, exist_ok=True)
+                kc.write_bytes(data)
+            raw += got
         except Exception as e:
             errors.append(f"spots {m.get('label', m['kind'])}: {e}")
+            if kc.exists():
+                raw += parse_kml(kc.read_bytes(), m["kind"])
     spots, dropped = clean(raw)
     spots = spots[: cfg.get("max_slots", 200)]
 
