@@ -1,21 +1,20 @@
-name: Update weather & news
+name: Update weather & spots
 
 on:
   schedule:
-    - cron: "*/30 * * * *"   # 30分ごと
+    - cron: "*/30 * * * *"   # 30分ごと（GitHubの混雑で数分〜十数分遅れることがあります）
   workflow_dispatch:          # 手動実行ボタン
   push:
     branches: [main]
 
 permissions:
   contents: read
-  actions: read
   pages: write
   id-token: write
 
 concurrency:
   group: pages
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -25,6 +24,12 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Restore spot image cache
+        uses: actions/cache@v4
+        with:
+          path: .cache
+          key: spots-v1-${{ github.run_id }}
+          restore-keys: spots-v1-
       - name: Fetch data
         run: python scripts/fetch.py
       - uses: actions/configure-pages@v5
@@ -37,7 +42,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.deploy.outputs.page_url }}
     steps:
-      - id: deployment
+      - id: deploy
         uses: actions/deploy-pages@v4
