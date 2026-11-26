@@ -220,178 +220,6 @@ def fetch_city(city: dict, tz: str, tomorrow: date) -> dict:
     return w
 
 
-def fetch_news(feed: dict, limit: int, exclude=()) -> list:
-    root = ET.fromstring(get(feed["url"]))
-    items = []
-    for it in root.iter("item"):  # RSS 2.0（Googleニュースは「見出し - 媒体名」形式）
-        title = (it.findtext("title") or "").strip()
-        src = (it.findtext("source") or "").strip() or feed["name"]
-        if src and title.endswith(" - " + src):
-            title = title[: -len(src) - 3].rstrip()
-        for sep in (" | ", "｜", " - "):  # サイト名の付属部分を落とす
-            if sep in title and len(title.split(sep)[0]) >= 8:
-                title = title.split(sep)[0].strip()
-        if title and not any(x in title for x in exclude):
-            items.append({"title": title, "source": src, "area": feed["name"],
-                          "link": (it.findtext("link") or "").strip()})
-    if not items:  # Atom
-        ns = {"a": "http://www.w3.org/2005/Atom"}
-        for e in root.findall("a:entry", ns):
-            title = (e.findtext("a:title", default="", namespaces=ns) or "").strip()
-            if title:
-                items.append({"title": title, "source": feed["name"], "area": feed["name"]})
-    return items[: feed.get("limit", limit)]
-
-
-
-# ------------------------------------------------------------------ 記事ページから画像と冒頭を取る
-import html as _html
-import re
-import urllib.parse
-
-IMG_DIR = OUT_DIR / "img"
-THUMB_W, THUMB_H = 640, 177
-
-
-def _pil():
-    try:
-        from PIL import Image
-    except ImportError:  # Actions の標準環境には無いので入れる
-        import subprocess
-        subprocess.run([sys.executable, "-m", "pip", "install", "--quiet", "pillow"], check=True)
-        from PIL import Image
-    return Image
-
-
-def decode_gnews(link: str) -> str:
-    """Googleニュースの転送URLから元記事のURLを取り出す。失敗したら空文字。"""
-    try:
-        u = urllib.parse.urlparse(link)
-        if u.netloc != "news.google.com":
-            return link
-        b64 = u.path.rstrip("/").split("/")[-1]
-        page = get(f"https://news.google.com/articles/{b64}", timeout=20).decode("utf-8", "replace")
-        sg = re.search(r'data-n-a-sg="([^"]+)"', page)
-        ts = re.search(r'data-n-a-ts="([^"]+)"', page)
-        if not sg or not ts:
-            return ""
-        inner = ('["garturlreq",[["X","X",["X","X"],null,null,1,1,"US:en",null,1,null,null,null,null,null,0,1],'
-                 f'"X","X",1,[1,1,1],1,1,null,0,0,null,0],"{b64}",{ts.group(1)},"{sg.group(1)}"]')
-        body = urllib.parse.urlencode({"f.req": json.dumps([[["Fbv4je", inner]]])}).encode()
-        req = urllib.request.Request(
-            "https://news.google.com/_/DotsSplashUi/data/batchexecute", data=body,
-            headers={**UA, "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"})
-        with urllib.request.urlopen(req, timeout=20) as r:
-            txt = r.read().decode("utf-8", "replace")
-        parsed = json.loads(txt.split("\n\n")[1])[:-2]
-        return json.loads(parsed[0][2])[1]
-    except Exception as e:
-        print("WARN: gnews decode:", repr(e), file=sys.stderr)
-        return ""
-
-
-def _meta(page: str, *names) -> str:
-    for n in names:
-        for pat in (rf'<meta[^>]+(?:property|name)=["\']{n}["\'][^>]*content=["\']([^"\']*)["\']',
-                    rf'<meta[^>]+content=["\']([^"\']*)["\'][^>]*(?:property|name)=["\']{n}["\']'):
-            m = re.search(pat, page, re.I)
-            if m and m.group(1).strip():
-                return _html.unescape(m.group(1)).strip()
-    return ""
-
-
-def enrich(item: dict, idx: int) -> None:
-    """item に body と image(0/1) を足す。取れなければ空。"""
-    item["body"], item["image"] = "", 0
-    url = decode_gnews(item.get("link", ""))
-    if not url:
-        return
-    raw = get(url, timeout=25)[:600000]
-    m = re.search(rb'charset=["\']?([\w-]+)', raw[:4000])
-    page = raw.decode(m.group(1).decode() if m else "utf-8", "replace")
-    desc = _meta(page, "og:description", "description")
-    desc = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", "", desc))
-    item["body"] = desc[:110] + ("…" if len(desc) > 110 else "")
-    img = _meta(page, "og:image", "twitter:image")
-    if img:
-        img = urllib.parse.urljoin(url, img)
-        try:
-            data = get(img, timeout=25)
-            if len(data) <= 8_000_000:
-                import io
-                Image = _pil()
-                im = Image.open(io.BytesIO(data)).convert("RGB")
-                w, h = im.size
-                th = w * THUMB_H / THUMB_W
-                if th <= h:  # 縦が余る → 上寄りで切る
-                    top = int((h - th) * 0.3)
-                    im = im.crop((0, top, w, top + int(th)))
-                else:
-                    tw = h * THUMB_W / THUMB_H
-                    left = int((w - tw) / 2)
-                    im = im.crop((left, 0, left + int(tw), h))
-                im = im.resize((THUMB_W, THUMB_H), Image.LANCZOS)
-                IMG_DIR.mkdir(parents=True, exist_ok=True)
-                im.save(IMG_DIR / f"n{idx}.jpg", "JPEG", quality=80)
-                item["image"] = 1
-        except Exception as e:
-            print("WARN: image:", repr(e), file=sys.stderr)
-
-
-def pick_best(cands: list, idx: int) -> dict:
-    """候補のうち、画像が取れた最初の記事を採用（無ければ先頭）。"""
-    first = None
-    for c in cands[:3]:
-        try:
-            enrich(c, idx)
-        except Exception as e:
-            print("WARN: enrich:", repr(e), file=sys.stderr)
-            c.setdefault("body", ""); c.setdefault("image", 0)
-        if first is None:
-            first = c
-        if c.get("image"):
-            return c
-    return first
-
-
-# ------------------------------------------------------------------ 気象庁 防災気象情報（北陸）
-JMA_FEED = "https://www.data.jma.go.jp/developer/xml/feed/extra.xml"
-ATOM = "{http://www.w3.org/2005/Atom}"
-
-
-def fetch_jma_alerts(offices: list, per_office: int, limit: int) -> list:
-    root = ET.fromstring(get(JMA_FEED, timeout=30))
-    found = []
-    seen = set()
-    for e in root.findall(ATOM + "entry"):
-        office = (e.findtext(f"{ATOM}author/{ATOM}name") or "").strip()
-        if office not in offices:
-            continue
-        title = (e.findtext(ATOM + "title") or "").strip()
-        text = (e.findtext(ATOM + "content") or "").strip()
-        if not text or "解説" in title:
-            continue
-        # 【石川県気象警報・注意報】を取り、先頭の見出し語として県名を残す
-        text = text.replace("【", "").replace("】", " ")
-        key = (office, text)
-        if key in seen:
-            continue
-        seen.add(key)
-        found.append({"office": office, "updated": e.findtext(ATOM + "updated") or "", "text": text})
-    found.sort(key=lambda x: x["updated"], reverse=True)
-    out, count = [], {}
-    for f in found:
-        if count.get(f["office"], 0) >= per_office:
-            continue
-        count[f["office"]] = count.get(f["office"], 0) + 1
-        t = f["text"]
-        if len(t) > 70:
-            t = t[:69] + "…"
-        out.append({"title": t, "source": f["office"]})
-    return out[:limit]
-
-
-# ------------------------------------------------------------------ 表示テキスト
 def fmt(v, unit=""):
     return "-" if v is None else f"{v}{unit}"
 
@@ -433,58 +261,49 @@ def main() -> int:
         except Exception as e:
             errors.append(f"weather {c['name']}: {e}")
 
-    news = []
-    ncfg = CONFIG.get("news", {})
-    limit = ncfg.get("max_items", 8)
-    jcfg = ncfg.get("jma_alerts")
-    if jcfg:
+    spots, dropped = [], []
+    scfg = CONFIG.get("spots")
+    if scfg:
         try:
-            news.extend(fetch_jma_alerts(jcfg["offices"], jcfg.get("per_office", 2), limit))
+            import spots as spots_mod
+            spots, serr, dropped = spots_mod.build_all(scfg, OUT_DIR, ROOT / ".cache" / "spots")
+            errors += serr
         except Exception as e:
-            errors.append(f"jma alerts: {e}")
-    if IMG_DIR.exists():
-        for old in IMG_DIR.glob("*.jpg"):
-            old.unlink()
-    for idx, f in enumerate(ncfg.get("feeds", [])):
-        try:
-            cands = fetch_news(dict(f, limit=6), 6, ncfg.get("exclude", []))
-            if cands:
-                best = pick_best(cands, idx)
-                if best:
-                    best["idx"] = idx
-                    news.append(best)
-        except Exception as e:
-            errors.append(f"news {f['name']}: {e}")
-    seen_t, uniq = set(), []
-    for n in news:
-        if len(n["title"]) > 70:
-            n["title"] = n["title"][:69] + "…"
-        n.pop("link", None)
-        if n["title"] in seen_t:
-            continue
-        seen_t.add(n["title"])
-        uniq.append(n)
-    news = uniq[:limit]
-    if not news and jcfg:
-        news = [{"title": "現在、北陸に発表中の気象情報はありません", "source": "気象庁"}]
+            errors.append(f"spots: {e}")
+        for d in dropped:
+            print("INFO: 座標が県の範囲外のため除外:", d, file=sys.stderr)
+
+    contribute = {}
+    ccfg = CONFIG.get("contribute")
+    if ccfg:
+        contribute = {k: ccfg.get(k, "") for k in ("title", "text", "url")}
+        if ccfg.get("url"):
+            try:
+                import spots as spots_mod
+                (OUT_DIR / "img").mkdir(parents=True, exist_ok=True)
+                spots_mod.qr_image(ccfg["url"]).save(OUT_DIR / "img" / "contribute.jpg", "JPEG", quality=90)
+            except Exception as e:
+                errors.append(f"contribute qr: {e}")
 
     wd = "月火水木金土日"[tomorrow.weekday()]
     credit = "Weather data by Open-Meteo.com (CC BY 4.0)"
+    spot_credit = "スポット: 作者のGoogleマイマップ / 地図: 地理院タイル(国土地理院) / 写真: Wikimedia Commons(各写真の下に撮影者とライセンス)"
     if any(w["tomorrow"]["source"] == "JMA" for w in weather):
-        credit = "明日の予報: 気象庁 / 現在の天気: Open-Meteo.com (CC BY 4.0) / ニュース: Googleニュース / 地図: 地球地図日本"
+        credit = "明日の予報: 気象庁 / 現在の天気: Open-Meteo.com (CC BY 4.0) / 地図: 地球地図日本"
 
     data = {
         "updated": now.strftime("%Y-%m-%d %H:%M"),
         "updated_unix": int(now.timestamp()),
         "tomorrow_date": tomorrow.isoformat(),
         "weather": weather,
-        "news": news,
+        "spots": spots,
+        "contribute": contribute,
         "weather_text": "\n".join(weather_line(w) for w in weather) or "天気を取得できませんでした",
         "list_now": "\n".join(now_line(w) for w in weather) or "天気を取得できませんでした",
         "list_tomorrow": "\n".join(forecast_line(w, True) for w in weather) or "予報を取得できませんでした",
         "forecast_title": f"明日 {tomorrow.month}/{tomorrow.day}({wd}) の天気",
         "forecast_text": "\n".join(forecast_line(w, len(weather) > 5) for w in weather) or "予報を取得できませんでした",
-        "news_text": "\n".join(f"<color=#8FD3FF>[{n.get('area', '')}]</color> {n['title']}" if n.get("area") else f"・{n['title']}" for n in news) or "ニュースを取得できませんでした",
+        "spot_credit": spot_credit,
         "credit": credit,
         "errors": errors,
     }
@@ -496,8 +315,8 @@ def main() -> int:
         encoding="utf-8")
     for e in errors:
         print("WARN:", e, file=sys.stderr)
-    print(f"wrote data.json: {len(weather)} cities, {len(news)} news")
-    return 1 if not weather and not news else 0
+    print(f"wrote data.json: {len(weather)} cities, {len(spots)} spots")
+    return 1 if not weather and not spots else 0
 
 
 if __name__ == "__main__":
