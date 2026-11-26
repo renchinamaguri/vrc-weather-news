@@ -276,14 +276,17 @@ def main() -> int:
     contribute = {}
     ccfg = CONFIG.get("contribute")
     if ccfg:
-        contribute = {k: ccfg.get(k, "") for k in ("title", "text", "url")}
-        if ccfg.get("url"):
+        contribute = {k: ccfg.get(k, "") for k in ("title", "text", "url_food", "url_sight")}
+        for kind in ("food", "sight"):
+            u = ccfg.get("url_" + kind)
+            if not u:
+                continue
             try:
                 import spots as spots_mod
                 (OUT_DIR / "img").mkdir(parents=True, exist_ok=True)
-                spots_mod.qr_image(ccfg["url"]).save(OUT_DIR / "img" / "contribute.jpg", "JPEG", quality=90)
+                spots_mod.qr_image(u).save(OUT_DIR / "img" / f"contribute_{kind}.jpg", "JPEG", quality=90)
             except Exception as e:
-                errors.append(f"contribute qr: {e}")
+                errors.append(f"contribute qr {kind}: {e}")
 
     wd = "月火水木金土日"[tomorrow.weekday()]
     credit = "Weather data by Open-Meteo.com (CC BY 4.0)"
