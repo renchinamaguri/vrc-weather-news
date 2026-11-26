@@ -290,7 +290,7 @@ def main() -> int:
 
     wd = "月火水木金土日"[tomorrow.weekday()]
     credit = "Weather data by Open-Meteo.com (CC BY 4.0)"
-    spot_credit = "スポット: 作者のGoogleマイマップ / 地図: 地理院タイル(国土地理院) / 写真: Wikimedia Commons(各写真の下に撮影者とライセンス)"
+    spot_credit = "スポット: 作者のGoogleマイマップ / 地図・航空写真: 地理院タイル(国土地理院) / 写真: Wikimedia Commons"
     if any(w["tomorrow"]["source"] == "JMA" for w in weather):
         credit = "明日の予報: 気象庁 / 現在の天気: Open-Meteo.com (CC BY 4.0) / 地図: 地球地図日本"
 
@@ -299,22 +299,27 @@ def main() -> int:
         "updated_unix": int(now.timestamp()),
         "tomorrow_date": tomorrow.isoformat(),
         "weather": weather,
-        "spots": spots,
-        "contribute": contribute,
         "weather_text": "\n".join(weather_line(w) for w in weather) or "天気を取得できませんでした",
         "list_now": "\n".join(now_line(w) for w in weather) or "天気を取得できませんでした",
         "list_tomorrow": "\n".join(forecast_line(w, True) for w in weather) or "予報を取得できませんでした",
         "forecast_title": f"明日 {tomorrow.month}/{tomorrow.day}({wd}) の天気",
         "forecast_text": "\n".join(forecast_line(w, len(weather) > 5) for w in weather) or "予報を取得できませんでした",
-        "spot_credit": spot_credit,
         "credit": credit,
         "errors": errors,
     }
 
     OUT_DIR.mkdir(exist_ok=True)
+    # スポットは件数が多くて重いので、天気(data.json)とは別ファイルにする
+    spots_data = {
+        "updated": data["updated"],
+        "spots": spots,
+        "contribute": contribute,
+        "spot_credit": spot_credit,
+    }
+    (OUT_DIR / "spots.json").write_text(json.dumps(spots_data, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     (OUT_DIR / "data.json").write_text(json.dumps(data, ensure_ascii=False, indent=1), encoding="utf-8")
     (OUT_DIR / "index.html").write_text(
-        '<meta charset="utf-8"><p>VRChat weather/news feed: <a href="data.json">data.json</a></p>',
+        '<meta charset="utf-8"><p>VRChat weather/news feed: <a href="data.json">data.json</a> / <a href="spots.json">spots.json</a></p>',
         encoding="utf-8")
     for e in errors:
         print("WARN:", e, file=sys.stderr)

@@ -20,9 +20,13 @@ from pathlib import Path
 UA = {"User-Agent": "vrc-weather-news/2.0 (GitHub Actions; hobby VRChat world)"}
 PHOTO_W, PHOTO_H, QR_W = 320, 200, 200
 TEX_W = PHOTO_W + QR_W
-GSI_URL = "https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png"
-GSI_Z = 15
+GSI_LAYERS = {  # 種類: (URL, ズーム, 出典の表記)
+    "std": ("https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png", 16, "地図: 地理院タイル 標準地図(国土地理院)"),
+    "photo": ("https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg", 16, "航空写真: 地理院タイル 全国最新写真(国土地理院)"),
+}
+IMG_VERSION = "v3"  # 画像の作り方を変えたら上げる(キャッシュを作り直す)
 COMMONS_API = "https://commons.wikimedia.org/w/api.php"
+WIKIDATA_API = "https://www.wikidata.org/w/api.php"
 OK_LICENSES = ("cc by", "cc0", "public domain", "pd", "cc-by")
 
 # 県ごとのおおよその範囲(緯度min, 緯度max, 経度min, 経度max)。範囲外の座標ミスを除外する
@@ -146,10 +150,11 @@ def _cover(img, w, h):
     return im.crop((l, t, l + w, t + h))
 
 
-def gsi_map(lat: float, lon: float, fetch=_http):
-    """国土地理院 淡色地図タイルを並べて 320x200 を切り出し、中央にピンを描く。"""
-    from PIL import Image, ImageDraw
-    n = 2 ** GSI_Z
+def gsi_map(lat: float, lon: float, fetch=_http, layer: str = "std"):
+    """国土地理院のタイル(標準地図/航空写真)を並べて 320x200 を切り出し、中央にピンを描く。"""
+    from PIL import Image, ImageDraw, ImageFilter
+    url, z, _ = GSI_LAYERS[layer]
+    n = 2 ** z
     fx = (lon + 180.0) / 360.0 * n
     fy = (1 - math.asinh(math.tan(math.radians(lat))) / math.pi) / 2 * n
     cx, cy = fx * 256, fy * 256
@@ -159,22 +164,27 @@ def gsi_map(lat: float, lon: float, fetch=_http):
     for tx in range(x0, x1 + 1):
         for ty in range(y0, y1 + 1):
             try:
-                tile = Image.open(io.BytesIO(fetch(GSI_URL.format(z=GSI_Z, x=tx, y=ty)))).convert("RGB")
+                tile = Image.open(io.BytesIO(fetch(url.format(z=z, x=tx, y=ty)))).convert("RGB")
                 canvas.paste(tile, ((tx - x0) * 256, (ty - y0) * 256))
             except Exception:
                 pass
             time.sleep(0.05)
     px, py = cx - x0 * 256, cy - y0 * 256
     left, top = int(px - PHOTO_W / 2), int(py - PHOTO_H / 2)
-    im = canvas.crop((left, top, left + PHOTO_W, top + PHOTO_H))
+    im = canvas.crop((left, top, left + PHOTO_W, top + PHOTO_H)).convert("RGBA")
+    # ピン(影つき): 先端が中心に来るしずく形
+    cxp, cyp = PHOTO_W // 2, PHOTO_H // 2
+    sh = Image.new("RGBA", im.size, (0, 0, 0, 0))
+    ImageDraw.Draw(sh).ellipse((cxp - 10, cyp - 4, cxp + 10, cyp + 4), fill=(0, 0, 0, 120))
+    im = Image.alpha_composite(im, sh.filter(ImageFilter.GaussianBlur(3)))
     d = ImageDraw.Draw(im)
-    c = (PHOTO_W // 2, PHOTO_H // 2)
-    d.ellipse((c[0] - 11, c[1] - 11, c[0] + 11, c[1] + 11), fill=(230, 40, 40), outline=(255, 255, 255), width=3)
-    d.ellipse((c[0] - 4, c[1] - 4, c[0] + 4, c[1] + 4), fill=(255, 255, 255))
-    return im
+    d.polygon([(cxp - 13, cyp - 30), (cxp + 13, cyp - 30), (cxp, cyp)], fill=(225, 45, 45, 255))
+    d.ellipse((cxp - 17, cyp - 50, cxp + 17, cyp - 16), fill=(225, 45, 45, 255), outline=(255, 255, 255, 255), width=3)
+    d.ellipse((cxp - 6, cyp - 39, cxp + 6, cyp - 27), fill=(255, 255, 255, 255))
+    return im.convert("RGB")
 
 
-def _pick_commons(titles: list, fetch, must_have: str = ""):
+def _pick_commons(titles: list, fetch, must_have: str = "", min_ratio: float = 1.2):
     """候補ファイルのうち、自由なライセンスの横長JPEGを1枚選ぶ。must_have があればタイトルか説明に含まれるものだけ。"""
     from PIL import Image
     if not titles:
@@ -185,7 +195,7 @@ def _pick_commons(titles: list, fetch, must_have: str = ""):
     order = {t: i for i, t in enumerate(titles)}
     for p in sorted(pages.values(), key=lambda p: order.get(p.get("title"), 99)):
         ii = (p.get("imageinfo") or [{}])[0]
-        if ii.get("mime") != "image/jpeg" or ii.get("width", 0) < ii.get("height", 1) * 1.2:
+        if ii.get("mime") != "image/jpeg" or ii.get("width", 0) < ii.get("height", 1) * min_ratio:
             continue
         md = ii.get("extmetadata", {})
         lic = (md.get("LicenseShortName", {}).get("value") or "").lower()
@@ -204,15 +214,56 @@ def _pick_commons(titles: list, fetch, must_have: str = ""):
     return None
 
 
-def commons_photo(lat: float, lon: float, name: str, fetch=_http):
-    """Wikimedia Commons の写真(自由なライセンス)を探す。(Image, credit) か None。
-    1) 座標の近く(1km)の写真  2) 名前で検索した写真(名前がタイトル/説明にあるものだけ)"""
-    q = {"action": "query", "list": "geosearch", "gscoordinate": f"{lat}|{lon}", "gsradius": 1000,
-         "gsnamespace": 6, "gslimit": 20, "format": "json"}
-    res = json.loads(fetch(COMMONS_API + "?" + urllib.parse.urlencode(q)))
-    r = _pick_commons([g["title"] for g in res.get("query", {}).get("geosearch", [])], fetch)
-    if r:
-        return r
+def _km(lat1, lon1, lat2, lon2) -> float:
+    p = math.pi / 180
+    a = (math.sin((lat2 - lat1) * p / 2) ** 2
+         + math.cos(lat1 * p) * math.cos(lat2 * p) * math.sin((lon2 - lon1) * p / 2) ** 2)
+    return 12742 * math.asin(math.sqrt(a))
+
+
+def wikidata_photo(lat: float, lon: float, name: str, fetch=_http):
+    """Wikidata で名前から該当の項目を探し、座標が近い(2km以内)ものの代表画像(P18)を使う。"""
+    key = re.sub(r"[（(].*?[）)]|【.*?】|\s+", "", name)
+    if len(key) < 2:
+        return None
+    q = {"action": "wbsearchentities", "search": key, "language": "ja", "uselang": "ja", "limit": 5, "format": "json"}
+    ids = [e["id"] for e in json.loads(fetch(WIKIDATA_API + "?" + urllib.parse.urlencode(q))).get("search", [])]
+    if not ids:
+        return None
+    q = {"action": "wbgetentities", "ids": "|".join(ids), "props": "claims", "format": "json"}
+    ents = json.loads(fetch(WIKIDATA_API + "?" + urllib.parse.urlencode(q))).get("entities", {})
+    for i in ids:
+        claims = ents.get(i, {}).get("claims", {})
+        try:
+            c = claims["P625"][0]["mainsnak"]["datavalue"]["value"]
+            img = claims["P18"][0]["mainsnak"]["datavalue"]["value"]
+        except (KeyError, IndexError):
+            continue
+        if _km(lat, lon, c["latitude"], c["longitude"]) > 2.0:
+            continue
+        r = _pick_commons(["File:" + img], fetch, "", 0.9)
+        if r:
+            return r
+    return None
+
+
+def commons_photo(lat: float, lon: float, name: str, fetch=_http, near_ok: bool = True):
+    """自由なライセンスの写真を探す。(Image, credit) か None。
+    1) Wikidata の代表画像(名前+座標が合うもの)  2) 座標の近く(1km)の Commons の写真(観光地のみ)
+    3) 名前で検索した Commons の写真(名前がタイトル/説明にあるものだけ)"""
+    try:
+        r = wikidata_photo(lat, lon, name, fetch)
+        if r:
+            return r
+    except Exception as e:
+        print("WARN wikidata", name, e, file=sys.stderr)
+    if near_ok:  # お店は「近くの別の写真」を載せると紛らわしいので、観光地だけ
+        q = {"action": "query", "list": "geosearch", "gscoordinate": f"{lat}|{lon}", "gsradius": 1000,
+             "gsnamespace": 6, "gslimit": 20, "format": "json"}
+        res = json.loads(fetch(COMMONS_API + "?" + urllib.parse.urlencode(q)))
+        r = _pick_commons([g["title"] for g in res.get("query", {}).get("geosearch", [])], fetch)
+        if r:
+            return r
     key = re.sub(r"[（(].*?[）)]|【.*?】|\s+", "", name)
     if len(key) < 2:
         return None
@@ -237,13 +288,14 @@ def build_image(s: dict, fetch=_http) -> tuple:
     photo, credit = None, ""
     if True:  # グルメも検索する(見つかるのは有名店だけ)
         try:
-            r = commons_photo(s["lat"], s["lon"], s["name"], fetch)
+            r = commons_photo(s["lat"], s["lon"], s["name"], fetch, near_ok=(s["kind"] == "sight"))
             if r:
                 photo, credit = r
         except Exception as e:
             print("WARN commons", s["name"], e, file=sys.stderr)
     if photo is None:
-        photo, credit = gsi_map(s["lat"], s["lon"], fetch), "地図: 地理院タイル(国土地理院)"
+        layer = "photo" if s["kind"] == "sight" else "std"
+        photo, credit = gsi_map(s["lat"], s["lon"], fetch, layer), GSI_LAYERS[layer][2]
     tex = Image.new("RGB", (TEX_W, PHOTO_H), (255, 255, 255))
     tex.paste(photo, (0, 0))
     tex.paste(qr_image(maps_url(s)), (PHOTO_W, (PHOTO_H - QR_W) // 2))
@@ -283,7 +335,7 @@ def build_all(cfg: dict, out_dir: Path, cache_dir: Path, fetch=_http) -> tuple:
     cache_dir.mkdir(parents=True, exist_ok=True)
     result = []
     for i, s in enumerate(spots):
-        key = hashlib.sha1(f"{s['kind']}|{s['name']}|{s['lat']:.5f}|{s['lon']:.5f}".encode()).hexdigest()[:16]
+        key = hashlib.sha1(f"{IMG_VERSION}|{s['kind']}|{s['name']}|{s['lat']:.5f}|{s['lon']:.5f}".encode()).hexdigest()[:16]
         cj, cm = cache_dir / f"{key}.jpg", cache_dir / f"{key}.json"
         try:
             if cj.exists() and cm.exists():
