@@ -30,6 +30,8 @@ jobs:
           path: .cache
           key: spots-v1-${{ github.run_id }}
           restore-keys: spots-v1-
+      - name: Install libraries
+        run: pip install --quiet pillow qrcode
       - name: Fetch data
         run: python scripts/fetch.py
       - uses: actions/configure-pages@v5
