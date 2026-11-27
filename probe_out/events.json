@@ -1,214 +1,412 @@
 {
- "ishikawa:イベント": "ERR ERR HTTP Error 403: Forbidden",
- "ishikawa:観光イベント": "ERR ERR HTTP Error 403: Forbidden",
- "toyama:イベント": "ERR ERR <urlopen error [Errno -2] Name or service not known>",
- "toyama:観光イベント": "ERR ERR <urlopen error [Errno -2] Name or service not known>",
- "fukui_odp:イベント": [
-  {
-   "title": "イベント(福井県鯖江市)",
-   "name": "jp-fukui-sabae-774-odp",
-   "org": "福井県鯖江市",
-   "license": "クリエイティブ・コモンズ 表示 2.1",
-   "modified": "2026-11-05T08:02:21.475671",
-   "res": [
-    {
-     "url": "https://data.odp.jig.jp/rdf/jp/fukui/sabae/774.rdf",
-     "fmt": "linked RDF",
-     "mod": "2024-03-19T09:57:24.160309"
-    },
-    {
-     "url": "https://data.odp.jig.jp/viewcsv/jp/fukui/sabae/774.csv",
-     "fmt": "CSV",
-     "mod": "2024-03-19T09:57:24.160340"
-    }
+ "fukui:イベント(福井県鯖江市)": {
+  "url": "https://data.odp.jig.jp/viewcsv/jp/fukui/sabae/774.csv",
+  "rows": 686,
+  "header": [
+   "イベント名",
+   "イベント名(英語)",
+   "カテゴリ",
+   "開始日",
+   "終了日",
+   "イベント説明",
+   "イベント説明(英語)",
+   "開催場所について",
+   "イベントスケジュールについて",
+   "イベント開始時刻",
+   "イベント終了時刻",
+   "利用料金",
+   "問合先",
+   "問合先電話番号",
+   "主催者",
+   "開催場所施設名",
+   "駐車場有無",
+   "緯度",
+   "経度",
+   "対象地区",
+   "画像URL",
+   "ホームページアドレス",
+   "情報変更日時",
+   "情報作成日時"
+  ],
+  "sample": [
+   [
+    "立待地区　〜ベビータッチング〜",
+    "",
+    "子育て",
+    "2020/09/08",
+    "2020/09/08",
+    "講師：漆崎由美氏　　定員10組　地区限定　　＊問合せ・・・立待公民館（℡51‐3376）",
+    "",
+    "鯖江市西番スポーツセンター",
+    "10:30〜",
+    "10:30",
+    "",
+    "",
+    "鯖江市立待公民館",
+    "0778-51-3376",
+    "",
+    "鯖江市西番スポーツセンター",
+    "",
+    "35.9911661",
+    "136.1594286",
+    "立待地区",
+    "",
+    "https://www.city.sabae.fukui.jp/about_city/shinoshokai/kokyoshisetsu/sports_shisetsu/tenisu/nishibansports.html",
+    "",
+    ""
+   ],
+   [
+    "鯖江地区　〜ベビータッチング〜",
+    "",
+    "子育て",
+    "2020/09/09",
+    "2020/09/09",
+    "講師：藤田有布子氏　　定員15組　地区限定　＊申込制・・・申込・問合せ・・・鯖江公民館（℡51‐3010）",
+    "",
+    "ふれあいみんなの館・さばえ",
+    "10:00〜",
+    "10:00",
+    "",
+    "",
+    "鯖江市鯖江公民館",
+    "0778-51-3010",
+    "",
+    "ふれあいみんなの館・さばえ",
+    "",
+    "35.93766",
+    "136.179764",
+    "",
+    "",
+    "https://www.city.sabae.fukui.jp/about_city/shinoshokai/kokyoshisetsu/fureaiminnanoyakata.html",
+    "",
+    ""
+   ],
+   [
+    "豊地区　〜手形足形をとろう〜",
+    "",
+    "子育て",
+    "2020/09/10",
+    "2020/09/10",
+    "1回目10:00〜　2回目11:00〜　各10組ずつ　地区限定　申込・詳細・・・豊公民館（℡62−1011）",
+    "",
+    "鯖江市豊公民館",
+    "10:00〜",
+    "10:00",
+    "",
+    "",
+    "鯖江市豊公民館",
+    "0778-62-1011",
+    "",
+    "鯖江市豊公民館",
+    "",
+    "35.945984",
+    "136.152168",
+    "豊地区",
+    "http://www.city.sabae.fukui.jp/bin/000722-02-1.jpg",
+    "https://www.city.sabae.fukui.jp/kosodate_kyoiku/shogaigakushu/yutakakominkan/yutakakominkan.html",
+    "",
+    ""
    ]
-  },
-  {
-   "title": "スポーツ大会実施競技(福井県)",
-   "name": "jp-fukui-875-odp",
-   "org": "福井県",
-   "license": "CC-BY-2.1",
-   "modified": "2021-05-06T06:08:34.651994",
-   "res": [
-    {
-     "url": "https://data.odp.jig.jp/rdf/jp/fukui/875.rdf",
-     "fmt": "linked RDF",
-     "mod": "2021-05-06T15:08:34.712873"
-    },
-    {
-     "url": "https://data.odp.jig.jp/viewcsv/jp/fukui/875.csv",
-     "fmt": "CSV",
-     "mod": "2021-05-06T15:08:34.712903"
-    }
+  ],
+  "min_date": [
+   "2020/09/08",
+   "2020/09/09"
+  ],
+  "max_date": [
+   "2024/03/22",
+   "2024/03/23",
+   "2024/03/31"
+  ]
+ },
+ "fukui:イベント(福井県)": {
+  "url": "https://data.odp.jig.jp/viewcsv/jp/fukui/802.csv",
+  "rows": 99,
+  "header": [
+   "イベント名",
+   "イベント名(英語)",
+   "カテゴリ",
+   "開始日",
+   "終了日",
+   "イベント説明",
+   "イベント説明(英語)",
+   "開催場所について",
+   "イベントスケジュールについて",
+   "イベント開始時刻",
+   "イベント終了時刻",
+   "利用料金",
+   "問合先",
+   "問合先電話番号",
+   "主催者",
+   "開催場所施設名",
+   "駐車場有無",
+   "緯度",
+   "経度",
+   "対象地区",
+   "画像URL",
+   "ホームページアドレス",
+   "情報変更日時",
+   "情報作成日時",
+   "標準地域コード"
+  ],
+  "sample": [
+   [
+    "六呂師高原ｽｷｰﾊﾟｰｸ ｻﾏｰｹﾞﾚﾝﾃﾞｵｰﾌﾟﾝ",
+    "",
+    "スポーツ",
+    "2019-05-01",
+    "2019-11-30",
+    " 北陸三県で唯一となる人工ｹﾞﾚﾝﾃﾞの営業を5月1日より開始します｡雪上に限りなく近い感覚で滑走でき､冬用の板で滑走できます｡ｽﾉｰﾎﾞｰﾄﾞも滑走可能!ﾍﾙﾒｯﾄ､ﾌﾟﾛﾃｸﾀｰは無料貸出しているので安心して利用できます｡利用料金も1日滑っても大人2,000円､小人1,000円(一般開放日)とお得です!",
+    "",
+    "営業期間 令和元年5月1日~11月30日☆一般開放日(予約不要)【 5月1日~11月17日の日曜日､祝日 】☆貸切営業日(予約必要)※一般営業日以外 ",
+    "",
+    "",
+    "",
+    "",
+    "六呂師高原スキーパーク",
+    "0779-67-1066",
+    "六呂師高原スキーパーク",
+    "",
+    "",
+    "",
+    "",
+    "奥越前",
+    "",
+    "",
+    "",
+    "",
+    "http://statdb.nstac.go.jp/lod/sac/C18000"
+   ],
+   [
+    "写真展｢ｶﾗｰ写真が伝える 震災前後の福井｣",
+    "",
+    "歴史",
+    "2019-06-08",
+    "2019-09-01",
+    "昭和23年(1948年)6月28日に発生した福井地震で福井県は嶺北地方中心に大きな被害を受けました｡この写真展では､昭和22~23年ごろ､戦後の復興が進みつつあった福井震災前の福井市街地のｶﾗｰ写真(7点)､震災被害のｶﾗｰ写真(18点)の計25点を展示します｡",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "福井県立歴史博物館",
+    "0776-22-4675",
+    "福井県立歴史博物館",
+    "",
+    "",
+    "",
+    "",
+    "福井・坂井",
+    "",
+    "",
+    "",
+    "",
+    "http://statdb.nstac.go.jp/lod/sac/C18000"
+   ],
+   [
+    "｢発見!白川文字学｣ｼﾘｰｽﾞ2｢白川静博士の著作にﾁｬﾚﾝｼﾞ!~『初期万葉論』の巻~｣",
+    "",
+    "その他",
+    "2019-06-28",
+    "2019-09-29",
+    "白川静博士の著作『初期万葉論』をとりあげ､万葉集の歌とともに､昔の人々の暮らしぶりや考え方を分かりやすく紹介します｡",
+    "",
+    "■期間:6月28日(金)~9月29日(日)",
+    "",
+    "",
+    "",
+    "",
+    "福井県立図書館",
+    "0776-33-8860",
+    "福井県立図書館",
+    "",
+    "",
+    "",
+    "",
+    "福井・坂井",
+    "",
+    "",
+    "",
+    "",
+    "http://statdb.nstac.go.jp/lod/sac/C18000"
    ]
-  },
-  {
-   "title": "イベント(福井県)",
-   "name": "jp-fukui-802-odp",
-   "org": "福井県",
-   "license": "CC-BY-2.1",
-   "modified": "2021-05-06T06:08:29.313736",
-   "res": [
-    {
-     "url": "https://data.odp.jig.jp/rdf/jp/fukui/802.rdf",
-     "fmt": "linked RDF",
-     "mod": "2021-05-06T15:08:29.625448"
-    },
-    {
-     "url": "https://data.odp.jig.jp/viewcsv/jp/fukui/802.csv",
-     "fmt": "CSV",
-     "mod": "2021-05-06T15:08:29.625481"
-    }
+  ],
+  "min_date": [
+   "2019-05-01",
+   "2019-06-08"
+  ],
+  "max_date": [
+   "2020-02-21",
+   "2020-03-18",
+   "2020-03-19"
+  ]
+ },
+ "fukui:スポーツ大会実施競技(福井県)": {
+  "url": "https://data.odp.jig.jp/viewcsv/jp/fukui/875.csv",
+  "rows": 392,
+  "header": [
+   "大会名",
+   "競技区分",
+   "競技名",
+   "種別・種目",
+   "年齢区分",
+   "性別区分",
+   "会場名(日本語)",
+   "競技開始日時",
+   "競技開始日時",
+   "競技開始日時",
+   "競技開始日時",
+   "競技開始日時",
+   "問合せ先電話番号",
+   "画像URL",
+   "webサイト",
+   "説明(日本語)",
+   "説明(英語)",
+   "備考",
+   "標準地域コード"
+  ],
+  "sample": [
+   [
+    "福井しあわせ元気大会",
+    "毎年実施競技",
+    "陸上競技（身・知）",
+    "",
+    "",
+    "身体障がい",
+    "9.98スタジアム",
+    "2018-10-13T00:00:00+09:00",
+    "2018-10-14T00:00:00+09:00",
+    "2018-10-15T00:00:00+09:00",
+    "",
+    "",
+    "0776-36-1542",
+    "http://fukui2018.pref.fukui.lg.jp/taikai/game/seishiki-s/athletics",
+    "http://www.pref.fukui.lg.jp/doc/undoukouen/rikuzyou.html",
+    "競走競技、跳躍競技、投てき競技の3つが実施されています。スラローム、ビーンバッグ投など、障がい者スポーツ特有の種目を設定したり、障がいに応じた競技規則を定めるなどの工夫をしています。車いす使用者の競走競技では「レーサー」と呼ばれる競技専用の車いすを使用して競技を行う選手もいます。競技場内には、競技者のほかに必要に応じて介助者や伴走者の入場が認められています。視覚障がいのある選手は、トラック種目では伴走者を付けたり、跳躍や投てきの種目では、音や声などで跳ぶ方向や投げる方向などを知らせて競技を行います。",
+    "",
+    "",
+    "http://statdb.nstac.go.jp/lod/sac/C18000"
+   ],
+   [
+    "福井しあわせ元気大会",
+    "毎年実施競技",
+    "陸上競技（身・知）",
+    "",
+    "",
+    "知的障がい",
+    "9.98スタジアム",
+    "2018-10-13T00:00:00+09:00",
+    "2018-10-14T00:00:00+09:00",
+    "2018-10-15T00:00:00+09:00",
+    "",
+    "",
+    "0776-36-1542",
+    "http://fukui2018.pref.fukui.lg.jp/taikai/game/seishiki-s/athletics",
+    "http://www.pref.fukui.lg.jp/doc/undoukouen/rikuzyou.html",
+    "競走競技、跳躍競技、投てき競技の3つが実施されています。スラローム、ビーンバッグ投など、障がい者スポーツ特有の種目を設定したり、障がいに応じた競技規則を定めるなどの工夫をしています。車いす使用者の競走競技では「レーサー」と呼ばれる競技専用の車いすを使用して競技を行う選手もいます。競技場内には、競技者のほかに必要に応じて介助者や伴走者の入場が認められています。視覚障がいのある選手は、トラック種目では伴走者を付けたり、跳躍や投てきの種目では、音や声などで跳ぶ方向や投げる方向などを知らせて競技を行います。",
+    "",
+    "",
+    "http://statdb.nstac.go.jp/lod/sac/C18000"
+   ],
+   [
+    "福井しあわせ元気国体",
+    "毎年実施競技",
+    "陸上競技",
+    "１００ｍ",
+    "成年",
+    "男子",
+    "9.98スタジアム",
+    "2018-10-05T00:00:00+09:00",
+    "2018-10-06T00:00:00+09:00",
+    "2018-10-07T00:00:00+09:00",
+    "2018-10-08T00:00:00+09:00",
+    "2018-10-09T00:00:00+09:00",
+    "0776-36-1542",
+    "http://www.pref.fukui.lg.jp/doc/undoukouen/rikuzyou_d/img/001.jpg",
+    "http://www.pref.fukui.lg.jp/doc/undoukouen/rikuzyou.html",
+    "100メートル競走は、100メートルをいかに短い時間で走るかを競う陸上競技で、短距離走に分類されます。100mで必要とされるのは骨格から生み出される最高速と、最高速により早く到達する加速で、一般的には30mから40mの間に最高速に達し、そのスピードをできるだけ維持しながらゴールに達します。",
+    "",
+    "",
+    "http://statdb.nstac.go.jp/lod/sac/C18000"
    ]
-  }
- ],
- "fukui_odp:観光イベント": [],
- "geospatial:イベント": [
-  {
-   "title": "18207_福井県_鯖江市_観光情報",
-   "name": "18207-006",
-   "org": "鯖江市",
-   "license": "CC-BY",
-   "modified": "2024-10-05T02:13:40.598159",
-   "res": [
-    {
-     "url": "https://www.geospatial.jp/ckan/dataset/28681eb9-bc38-4ae1-8ef2-8b0c172b811f/resource/c400d0c2-4382-4ac2-b3e6-2bc1c2ebae96/download/eventttl.txt",
-     "fmt": "TXT",
-     "mod": "2017-11-02T10:41:39.256203"
-    },
-    {
-     "url": "https://www.geospatial.jp/ckan/dataset/28681eb9-bc38-4ae1-8ef2-8b0c172b811f/resource/e3a8608b-a5f1-4b71-9557-0f87a6562806/download/802.rdf",
-     "fmt": "RDF",
-     "mod": "2017-11-02T10:41:42.649921"
-    },
-    {
-     "url": "https://www.geospatial.jp/ckan/dataset/28681eb9-bc38-4ae1-8ef2-8b0c172b811f/resource/dd672c2d-c8f1-45fa-9716-012a5506cc9d/download/802.csv",
-     "fmt": "CSV",
-     "mod": "2017-11-02T10:41:46.179026"
-    },
-    {
-     "url": "https://www.geospatial.jp/ckan/dataset/28681eb9-bc38-4ae1-8ef2-8b0c172b811f/resource/cfb4ca4c-9fa0-4595-bf41-2673cec7a66c/download/548.rdf",
-     "fmt": "RDF",
-     "mod": "2017-11-02T10:41:50.528999"
-    },
-    {
-     "url": "https://www.geospatial.jp/ckan/dataset/28681eb9-bc38-4ae1-8ef2-8b0c172b811f/resource/38fd9bcd-cdee-4cab-8204-40c955ad9f25/download/548.csv",
-     "fmt": "CSV",
-     "mod": "2017-11-02T10:41:53.760231"
-    },
-    {
-     "url": "https://www.geospatial.jp/ckan/dataset/28681eb9-bc38-4ae1-8ef2-8b0c172b811f/resource/b2ccaf2a-7b7b-4e4d-862e-b3c63e0b77f4/download/774.rdf",
-     "fmt": "RDF",
-     "mod": "2017-11-02T10:41:56.637142"
-    }
+  ],
+  "min_date": [
+   "2018-08-05",
+   "2018-08-19"
+  ],
+  "max_date": [
+   "2018-10-13",
+   "2018-10-14",
+   "2018-10-15"
+  ]
+ },
+ "ishikawa_ckan": {
+  "head": "ERR HTTP Error 403: Forbidden",
+  "len": 29,
+  "links": []
+ },
+ "ishikawa_front": {
+  "head": "<!DOCTYPE html>\n<html lang=\"ja\">\n\n<head>\n\t<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n\t<meta nam",
+  "len": 6807,
+  "links": []
+ },
+ "toyama_ckan": {
+  "head": "ERR <urlopen error [Errno -2] Name or service not known>",
+  "len": 56,
+  "links": []
+ },
+ "toyama_www": {
+  "head": "ERR <urlopen error [Errno -2] Name or service not known>",
+  "len": 56,
+  "links": []
+ },
+ "fukui_lib": {
+  "head": "ERR HTTP Error 404: Not Found",
+  "len": 29,
+  "links": []
+ },
+ "niigata_city_od": {
+  "head": "<!DOCTYPE HTML>\n<html lang=\"ja\" xml:lang=\"ja\" prefix=\"og: http://ogp.me/ns# article: http://ogp.me/ns/article#\">\n<head>\n",
+  "len": 72234,
+  "links": [
+   [
+    "/kanko/index.html",
+    "観光・文化・スポーツ"
+   ],
+   [
+    "javascript:void(0)",
+    "観光・文化・スポーツ"
+   ],
+   [
+    "#cmskankou",
+    "観光情報"
+   ],
+   [
+    "/shisei/seisaku/it/open-data/opendata-kankou/od-irikomidata.html",
+    "新潟市観光入込客数"
+   ],
+   [
+    "/shisei/seisaku/it/open-data/opendata-kankou/index.html",
+    "観光情報\n\n"
+   ],
+   [
+    "/shisei/seisaku/it/open-data/opendata-gazou/od-event/od-shobofes/index.html",
+    "消防フェスタ119"
    ]
-  },
-  {
-   "title": "113697_埼玉県_東秩父村_イベントカレンダー",
-   "name": "11369-103",
-   "org": "東秩父村",
-   "license": "CC-BY",
-   "modified": "2024-10-05T02:04:46.260763",
-   "res": [
-    {
-     "url": "https://www.geospatial.jp/ckan/dataset/7c4058e2-9f91-43be-9d48-7a3d51252067/resource/d1cba032-14db-4a9a-b7c8-2853561898c2/download/event-calender-higashichichibumura.csv",
-     "fmt": "CSV",
-     "mod": "2018-03-19T07:56:43.783761"
-    }
+  ]
+ },
+ "niigata_pref_list": {
+  "head": "<!DOCTYPE html>\r\n<html lang=\"ja\">\r\n<head>\r\n\t<!-- Google tag (gtag.js) -->\n<script async src=\"https://www.googletagmanage",
+  "len": 20953,
+  "links": [
+   [
+    "/life/6/24/",
+    "観光"
+   ],
+   [
+    "/life/sub/2/",
+    "イベント"
    ]
-  },
-  {
-   "title": "112453_埼玉県_ふじみ野市_イベントカレンダー",
-   "name": "11245-105",
-   "org": "ふじみ野市",
-   "license": "CC-BY",
-   "modified": "2024-10-05T02:04:05.225856",
-   "res": [
-    {
-     "url": "https://www.geospatial.jp/ckan/dataset/b24900a1-ca17-476d-af1e-dd92cf7d0de7/resource/42ad2450-29f4-4f9c-a723-30c3be2c2677/download/ibento.csv",
-     "fmt": "CSV",
-     "mod": "2018-03-19T07:39:17.581817"
-    },
-    {
-     "url": "https://www.geospatial.jp/ckan/dataset/b24900a1-ca17-476d-af1e-dd92cf7d0de7/resource/f690e4eb-fa59-4504-84f0-0b41d3136abd/download/ibento.xlsx",
-     "fmt": "XLSX",
-     "mod": "2018-03-19T07:40:17.873637"
-    }
-   ]
-  },
-  {
-   "title": "092045_栃木県_佐野市_イベント一覧",
-   "name": "092045-013",
-   "org": "佐野市",
-   "license": "CC-BY",
-   "modified": "2024-10-05T02:03:56.225261",
-   "res": [
-    {
-     "url": "https://www.geospatial.jp/ckan/dataset/609dd2ae-90fd-49c6-8125-aff213a99e9c/resource/333574d2-4698-4f4d-8a59-c51a46c5cbcc/download/109.csv",
-     "fmt": "CSV",
-     "mod": "2018-10-29T10:41:48.201927"
-    }
-   ]
-  },
-  {
-   "title": "112429_埼玉県_日高市_【日高市】イベントカレンダー",
-   "name": "11242-103",
-   "org": "日高市",
-   "license": "CC-BY",
-   "modified": "2024-10-05T02:02:36.843909",
-   "res": [
-    {
-     "url": "https://www.geospatial.jp/ckan/dataset/75ca5655-9700-460b-85e5-cf48b7312702/resource/9dde8af9-eb25-4e23-a5f6-bea7eb3932ca/download/02event.csv",
-     "fmt": "CSV",
-     "mod": "2018-03-19T07:18:21.179723"
-    }
-   ]
-  },
-  {
-   "title": "観光スポット（イベント）",
-   "name": "setagaya02",
-   "org": "世田谷区",
-   "license": "CC-BY",
-   "modified": "2024-10-05T00:39:34.695641",
-   "res": [
-    {
-     "url": "https://data-setagaya.opendata.arcgis.com/datasets/%E8%A6%B3%E5%85%89%E3%82%B9%E3%83%9D%E3%83%83%E3%83%88%EF%BC%88%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88%EF%BC%89?",
-     "fmt": "",
-     "mod": "2018-01-23T05:07:05.242671"
-    }
-   ]
-  },
-  {
-   "title": "イベントデータ（緯度経度・想定動員数付）　株式会社イベントバンク",
-   "name": "eventdata",
-   "org": "株式会社イベントバンク",
-   "license": "GNU Free Documentation License",
-   "modified": "2024-10-04T14:58:31.523350",
-   "res": [
-    {
-     "url": "https://www.geospatial.jp/ckan/dataset/549a4977-ce41-4050-baf6-c78286876e53/resource/1e0306ac-a298-457f-9046-6bd6406134e0/download/kiyaku.pdf",
-     "fmt": "PDF",
-     "mod": "2019-11-21T01:30:45.213737"
-    },
-    {
-     "url": "https://www.geospatial.jp/leaflet/eventbank/",
-     "fmt": "DPREV",
-     "mod": "2019-11-13T02:41:46.940535"
-    },
-    {
-     "url": "https://www.eventbank.jp/",
-     "fmt": "URL",
-     "mod": "2019-10-09T10:20:30.083267"
-    },
-    {
-     "url": "https://www.eventbank.jp/",
-     "fmt": "URL",
-     "mod": "2019-11-06T08:21:35.786996"
-    }
-   ]
-  }
- ],
- "geospatial:観光イベント": [],
- "niigata_city_event": "ERR HTTP Error 404: Not Found",
- "niigata_insight": "ERR HTTP Error 404: Not Found"
+  ]
+ }
 }
