@@ -1,0 +1,214 @@
+{
+ "ishikawa:イベント": "ERR ERR HTTP Error 403: Forbidden",
+ "ishikawa:観光イベント": "ERR ERR HTTP Error 403: Forbidden",
+ "toyama:イベント": "ERR ERR <urlopen error [Errno -2] Name or service not known>",
+ "toyama:観光イベント": "ERR ERR <urlopen error [Errno -2] Name or service not known>",
+ "fukui_odp:イベント": [
+  {
+   "title": "イベント(福井県鯖江市)",
+   "name": "jp-fukui-sabae-774-odp",
+   "org": "福井県鯖江市",
+   "license": "クリエイティブ・コモンズ 表示 2.1",
+   "modified": "2026-11-05T08:02:21.475671",
+   "res": [
+    {
+     "url": "https://data.odp.jig.jp/rdf/jp/fukui/sabae/774.rdf",
+     "fmt": "linked RDF",
+     "mod": "2024-03-19T09:57:24.160309"
+    },
+    {
+     "url": "https://data.odp.jig.jp/viewcsv/jp/fukui/sabae/774.csv",
+     "fmt": "CSV",
+     "mod": "2024-03-19T09:57:24.160340"
+    }
+   ]
+  },
+  {
+   "title": "スポーツ大会実施競技(福井県)",
+   "name": "jp-fukui-875-odp",
+   "org": "福井県",
+   "license": "CC-BY-2.1",
+   "modified": "2021-05-06T06:08:34.651994",
+   "res": [
+    {
+     "url": "https://data.odp.jig.jp/rdf/jp/fukui/875.rdf",
+     "fmt": "linked RDF",
+     "mod": "2021-05-06T15:08:34.712873"
+    },
+    {
+     "url": "https://data.odp.jig.jp/viewcsv/jp/fukui/875.csv",
+     "fmt": "CSV",
+     "mod": "2021-05-06T15:08:34.712903"
+    }
+   ]
+  },
+  {
+   "title": "イベント(福井県)",
+   "name": "jp-fukui-802-odp",
+   "org": "福井県",
+   "license": "CC-BY-2.1",
+   "modified": "2021-05-06T06:08:29.313736",
+   "res": [
+    {
+     "url": "https://data.odp.jig.jp/rdf/jp/fukui/802.rdf",
+     "fmt": "linked RDF",
+     "mod": "2021-05-06T15:08:29.625448"
+    },
+    {
+     "url": "https://data.odp.jig.jp/viewcsv/jp/fukui/802.csv",
+     "fmt": "CSV",
+     "mod": "2021-05-06T15:08:29.625481"
+    }
+   ]
+  }
+ ],
+ "fukui_odp:観光イベント": [],
+ "geospatial:イベント": [
+  {
+   "title": "18207_福井県_鯖江市_観光情報",
+   "name": "18207-006",
+   "org": "鯖江市",
+   "license": "CC-BY",
+   "modified": "2024-10-05T02:13:40.598159",
+   "res": [
+    {
+     "url": "https://www.geospatial.jp/ckan/dataset/28681eb9-bc38-4ae1-8ef2-8b0c172b811f/resource/c400d0c2-4382-4ac2-b3e6-2bc1c2ebae96/download/eventttl.txt",
+     "fmt": "TXT",
+     "mod": "2017-11-02T10:41:39.256203"
+    },
+    {
+     "url": "https://www.geospatial.jp/ckan/dataset/28681eb9-bc38-4ae1-8ef2-8b0c172b811f/resource/e3a8608b-a5f1-4b71-9557-0f87a6562806/download/802.rdf",
+     "fmt": "RDF",
+     "mod": "2017-11-02T10:41:42.649921"
+    },
+    {
+     "url": "https://www.geospatial.jp/ckan/dataset/28681eb9-bc38-4ae1-8ef2-8b0c172b811f/resource/dd672c2d-c8f1-45fa-9716-012a5506cc9d/download/802.csv",
+     "fmt": "CSV",
+     "mod": "2017-11-02T10:41:46.179026"
+    },
+    {
+     "url": "https://www.geospatial.jp/ckan/dataset/28681eb9-bc38-4ae1-8ef2-8b0c172b811f/resource/cfb4ca4c-9fa0-4595-bf41-2673cec7a66c/download/548.rdf",
+     "fmt": "RDF",
+     "mod": "2017-11-02T10:41:50.528999"
+    },
+    {
+     "url": "https://www.geospatial.jp/ckan/dataset/28681eb9-bc38-4ae1-8ef2-8b0c172b811f/resource/38fd9bcd-cdee-4cab-8204-40c955ad9f25/download/548.csv",
+     "fmt": "CSV",
+     "mod": "2017-11-02T10:41:53.760231"
+    },
+    {
+     "url": "https://www.geospatial.jp/ckan/dataset/28681eb9-bc38-4ae1-8ef2-8b0c172b811f/resource/b2ccaf2a-7b7b-4e4d-862e-b3c63e0b77f4/download/774.rdf",
+     "fmt": "RDF",
+     "mod": "2017-11-02T10:41:56.637142"
+    }
+   ]
+  },
+  {
+   "title": "113697_埼玉県_東秩父村_イベントカレンダー",
+   "name": "11369-103",
+   "org": "東秩父村",
+   "license": "CC-BY",
+   "modified": "2024-10-05T02:04:46.260763",
+   "res": [
+    {
+     "url": "https://www.geospatial.jp/ckan/dataset/7c4058e2-9f91-43be-9d48-7a3d51252067/resource/d1cba032-14db-4a9a-b7c8-2853561898c2/download/event-calender-higashichichibumura.csv",
+     "fmt": "CSV",
+     "mod": "2018-03-19T07:56:43.783761"
+    }
+   ]
+  },
+  {
+   "title": "112453_埼玉県_ふじみ野市_イベントカレンダー",
+   "name": "11245-105",
+   "org": "ふじみ野市",
+   "license": "CC-BY",
+   "modified": "2024-10-05T02:04:05.225856",
+   "res": [
+    {
+     "url": "https://www.geospatial.jp/ckan/dataset/b24900a1-ca17-476d-af1e-dd92cf7d0de7/resource/42ad2450-29f4-4f9c-a723-30c3be2c2677/download/ibento.csv",
+     "fmt": "CSV",
+     "mod": "2018-03-19T07:39:17.581817"
+    },
+    {
+     "url": "https://www.geospatial.jp/ckan/dataset/b24900a1-ca17-476d-af1e-dd92cf7d0de7/resource/f690e4eb-fa59-4504-84f0-0b41d3136abd/download/ibento.xlsx",
+     "fmt": "XLSX",
+     "mod": "2018-03-19T07:40:17.873637"
+    }
+   ]
+  },
+  {
+   "title": "092045_栃木県_佐野市_イベント一覧",
+   "name": "092045-013",
+   "org": "佐野市",
+   "license": "CC-BY",
+   "modified": "2024-10-05T02:03:56.225261",
+   "res": [
+    {
+     "url": "https://www.geospatial.jp/ckan/dataset/609dd2ae-90fd-49c6-8125-aff213a99e9c/resource/333574d2-4698-4f4d-8a59-c51a46c5cbcc/download/109.csv",
+     "fmt": "CSV",
+     "mod": "2018-10-29T10:41:48.201927"
+    }
+   ]
+  },
+  {
+   "title": "112429_埼玉県_日高市_【日高市】イベントカレンダー",
+   "name": "11242-103",
+   "org": "日高市",
+   "license": "CC-BY",
+   "modified": "2024-10-05T02:02:36.843909",
+   "res": [
+    {
+     "url": "https://www.geospatial.jp/ckan/dataset/75ca5655-9700-460b-85e5-cf48b7312702/resource/9dde8af9-eb25-4e23-a5f6-bea7eb3932ca/download/02event.csv",
+     "fmt": "CSV",
+     "mod": "2018-03-19T07:18:21.179723"
+    }
+   ]
+  },
+  {
+   "title": "観光スポット（イベント）",
+   "name": "setagaya02",
+   "org": "世田谷区",
+   "license": "CC-BY",
+   "modified": "2024-10-05T00:39:34.695641",
+   "res": [
+    {
+     "url": "https://data-setagaya.opendata.arcgis.com/datasets/%E8%A6%B3%E5%85%89%E3%82%B9%E3%83%9D%E3%83%83%E3%83%88%EF%BC%88%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88%EF%BC%89?",
+     "fmt": "",
+     "mod": "2018-01-23T05:07:05.242671"
+    }
+   ]
+  },
+  {
+   "title": "イベントデータ（緯度経度・想定動員数付）　株式会社イベントバンク",
+   "name": "eventdata",
+   "org": "株式会社イベントバンク",
+   "license": "GNU Free Documentation License",
+   "modified": "2024-10-04T14:58:31.523350",
+   "res": [
+    {
+     "url": "https://www.geospatial.jp/ckan/dataset/549a4977-ce41-4050-baf6-c78286876e53/resource/1e0306ac-a298-457f-9046-6bd6406134e0/download/kiyaku.pdf",
+     "fmt": "PDF",
+     "mod": "2019-11-21T01:30:45.213737"
+    },
+    {
+     "url": "https://www.geospatial.jp/leaflet/eventbank/",
+     "fmt": "DPREV",
+     "mod": "2019-11-13T02:41:46.940535"
+    },
+    {
+     "url": "https://www.eventbank.jp/",
+     "fmt": "URL",
+     "mod": "2019-10-09T10:20:30.083267"
+    },
+    {
+     "url": "https://www.eventbank.jp/",
+     "fmt": "URL",
+     "mod": "2019-11-06T08:21:35.786996"
+    }
+   ]
+  }
+ ],
+ "geospatial:観光イベント": [],
+ "niigata_city_event": "ERR HTTP Error 404: Not Found",
+ "niigata_insight": "ERR HTTP Error 404: Not Found"
+}
