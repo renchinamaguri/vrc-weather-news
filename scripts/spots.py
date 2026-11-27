@@ -24,7 +24,7 @@ GSI_LAYERS = {  # 種類: (URL, ズーム, 出典の表記)
     "std": ("https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png", 16, "地図: 地理院タイル 標準地図(国土地理院)"),
     "photo": ("https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg", 16, "航空写真: 地理院タイル 全国最新写真(国土地理院)"),
 }
-IMG_VERSION = "v4"  # 画像の作り方を変えたら上げる(キャッシュを作り直す)
+IMG_VERSION = "v5"  # 画像の作り方を変えたら上げる(キャッシュを作り直す)
 COMMONS_API = "https://commons.wikimedia.org/w/api.php"
 WIKIDATA_API = "https://www.wikidata.org/w/api.php"
 OK_LICENSES = ("cc by", "cc0", "public domain", "pd", "cc-by")
@@ -46,9 +46,9 @@ GENRES = [
 ]
 
 
-def _http(url: str, timeout: int = 25) -> bytes:
+def _http(url: str, timeout: int = 25, headers: dict = None) -> bytes:
     url = urllib.parse.quote(url, safe=":/?&=+%|,@#")
-    req = urllib.request.Request(url, headers=UA)
+    req = urllib.request.Request(url, headers={**UA, **(headers or {})})
     with urllib.request.urlopen(req, timeout=timeout) as r:
         return r.read()
 
@@ -282,6 +282,53 @@ def qr_image(url: str):
     return im.resize((QR_W, QR_W), Image.NEAREST)
 
 
+def _bearing(la1, lo1, la2, lo2):
+    p1, p2, dl = map(math.radians, (la1, la2, lo2 - lo1))
+    y = math.sin(dl) * math.cos(p2)
+    x = math.cos(p1) * math.sin(p2) - math.sin(p1) * math.cos(p2) * math.cos(dl)
+    return (math.degrees(math.atan2(y, x)) + 360) % 360
+
+
+def _dist_m(la1, lo1, la2, lo2):
+    return math.hypot((la2 - la1) * 111000, (lo2 - lo1) * 111000 * math.cos(math.radians(la1)))
+
+
+def mapillary_photo(lat: float, lon: float, kind: str, fetch=_http):
+    """対象の方を向いている Mapillary の街路写真(CC BY-SA)。無ければ None。トークンは環境変数 MAPILLARY_TOKEN。"""
+    import os
+    from PIL import Image, ImageOps
+    token = os.environ.get("MAPILLARY_TOKEN", "").strip()
+    if not token.startswith("MLY|"):
+        return None
+    d0 = 0.002 if kind == "sight" else 0.001
+    q = urllib.parse.urlencode({"fields": "id,thumb_1024_url,compass_angle,geometry,is_pano,creator",
+                                "bbox": f"{lon-d0},{lat-d0},{lon+d0},{lat+d0}", "limit": 200})
+    hdr = {"Authorization": "OAuth " + token}
+    data = json.loads(fetch("https://graph.mapillary.com/images?" + q, headers=hdr)).get("data", [])
+    best = None
+    for it in data:
+        if it.get("is_pano") or "compass_angle" not in it or not it.get("thumb_1024_url"):
+            continue
+        lo, la = it["geometry"]["coordinates"]
+        dd = _dist_m(la, lo, lat, lon)
+        if dd < 15 or dd > 120:
+            continue
+        diff = abs((_bearing(la, lo, lat, lon) - it["compass_angle"] + 180) % 360 - 180)
+        if diff > 25:
+            continue
+        score = diff + dd / 10
+        if best is None or score < best[0]:
+            best = (score, it)
+    if not best:
+        return None
+    it = best[1]
+    raw = fetch(it["thumb_1024_url"], headers=hdr)
+    im = Image.open(io.BytesIO(raw)).convert("RGB")
+    im = ImageOps.fit(im, (PHOTO_W, PHOTO_H), Image.LANCZOS)
+    who = (it.get("creator") or {}).get("username") or "Mapillary contributor"
+    return im, f"{who} / CC BY-SA 4.0 (Mapillary)"
+
+
 def build_image(s: dict, fetch=_http) -> tuple:
     """(合成画像, クレジット文) を返す。"""
     from PIL import Image
@@ -293,6 +340,13 @@ def build_image(s: dict, fetch=_http) -> tuple:
                 photo, credit = r
         except Exception as e:
             print("WARN commons", s["name"], e, file=sys.stderr)
+    if photo is None:
+        try:
+            r = mapillary_photo(s["lat"], s["lon"], s["kind"], fetch)
+            if r:
+                photo, credit = r
+        except Exception as e:
+            print("WARN mapillary", s["name"], e, file=sys.stderr)
     if photo is None:
         layer = "photo"
         photo, credit = gsi_map(s["lat"], s["lon"], fetch, layer), GSI_LAYERS[layer][2]

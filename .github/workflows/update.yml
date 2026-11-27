@@ -33,6 +33,8 @@ jobs:
       - name: Install libraries
         run: pip install --quiet pillow qrcode
       - name: Fetch data
+        env:
+          MAPILLARY_TOKEN: ${{ secrets.MAPILLARY_TOKEN }}
         run: python scripts/fetch.py
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3

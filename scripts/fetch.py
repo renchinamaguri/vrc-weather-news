@@ -290,7 +290,7 @@ def main() -> int:
 
     wd = "月火水木金土日"[tomorrow.weekday()]
     credit = "Weather data by Open-Meteo.com (CC BY 4.0)"
-    spot_credit = "スポット: 作者のGoogleマイマップ / 地図・航空写真: 地理院タイル(国土地理院) / 写真: Wikimedia Commons"
+    spot_credit = "スポット: 作者のGoogleマイマップ / 地図・航空写真: 地理院タイル(国土地理院) / 写真: Wikimedia Commons・Mapillary"
     if any(w["tomorrow"]["source"] == "JMA" for w in weather):
         credit = "明日の予報: 気象庁 / 現在の天気: Open-Meteo.com (CC BY 4.0) / 地図: 地球地図日本"
 
