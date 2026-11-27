@@ -8,11 +8,13 @@ os.makedirs("test_out", exist_ok=True)
 def get(url):
     r = urllib.request.Request(url, headers={"Authorization": "OAuth " + TOKEN})
     return urllib.request.urlopen(r, timeout=30).read()
+import re
+print("token shape:", len(TOKEN), "parts:", len(TOKEN.split("|")), "starts MLY|:", TOKEN.startswith("MLY|"), "has space/newline:", bool(re.search(r"\s", TOKEN)), "lens:", [len(x) for x in TOKEN.split("|")])
 res = []
 for key, name, lat, lon in PLACES:
     d0 = 0.0005
     q = urllib.parse.urlencode({"fields": "id,thumb_1024_url,captured_at,compass_angle",
-                                "bbox": f"{lon-d0},{lat-d0},{lon+d0},{lat+d0}", "limit": 5})
+                                "bbox": f"{lon-d0},{lat-d0},{lon+d0},{lat+d0}", "limit": 5, "access_token": TOKEN})
     try:
         d = json.loads(get("https://graph.mapillary.com/images?" + q)).get("data", [])
     except Exception as e:
@@ -25,4 +27,3 @@ for key, name, lat, lon in PLACES:
     res.append({"place": name, "found": len(d), "id": it["id"], "captured_at": it.get("captured_at")})
 json.dump(res, open("test_out/result.json", "w"), ensure_ascii=False, indent=1)
 print(json.dumps(res, ensure_ascii=False, indent=1))
-# rerun
