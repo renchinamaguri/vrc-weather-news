@@ -25,3 +25,4 @@ for key, name, lat, lon in PLACES:
     res.append({"place": name, "found": len(d), "id": it["id"], "captured_at": it.get("captured_at")})
 json.dump(res, open("test_out/result.json", "w"), ensure_ascii=False, indent=1)
 print(json.dumps(res, ensure_ascii=False, indent=1))
+# rerun
