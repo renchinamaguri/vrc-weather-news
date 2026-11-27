@@ -1,22 +1,26 @@
 [
  {
   "place": "金沢 近江町市場",
-  "error": "HTTP Error 401: Unauthorized",
-  "body": "{\"error\":{\"message\":\"Invalid OAuth access token - Cannot parse access token\",\"type\":\"OAuthException\",\"code\":190,\"fbtrace_id\":\"AQ3-d-XJb1WyyBeTsrHx-nJ\"}}"
+  "found": 5,
+  "id": "1123584829611090",
+  "captured_at": 1750581113313
  },
  {
   "place": "富山駅前",
-  "error": "HTTP Error 401: Unauthorized",
-  "body": "{\"error\":{\"message\":\"Invalid OAuth access token - Cannot parse access token\",\"type\":\"OAuthException\",\"code\":190,\"fbtrace_id\":\"Asw_fnpZmijJdqQ0uWsO-Ul\"}}"
+  "found": 2,
+  "id": "1422260021446936",
+  "captured_at": 1525361060000
  },
  {
   "place": "福井駅前",
-  "error": "HTTP Error 401: Unauthorized",
-  "body": "{\"error\":{\"message\":\"Invalid OAuth access token - Cannot parse access token\",\"type\":\"OAuthException\",\"code\":190,\"fbtrace_id\":\"AIDZJmZHmiulxL70IYMDJIN\"}}"
+  "found": 1,
+  "id": "1039183867260403",
+  "captured_at": 1695018650625
  },
  {
   "place": "新潟 ぽんしゅ館",
-  "error": "HTTP Error 401: Unauthorized",
-  "body": "{\"error\":{\"message\":\"Invalid OAuth access token - Cannot parse access token\",\"type\":\"OAuthException\",\"code\":190,\"fbtrace_id\":\"AFQONvJpaY2IyhVoLxeLgu0\"}}"
+  "found": 1,
+  "id": "1410854479553807",
+  "captured_at": 1711917862505
  }
 ]
