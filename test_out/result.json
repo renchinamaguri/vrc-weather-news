@@ -1,18 +1,22 @@
 [
  {
   "place": "金沢 近江町市場",
-  "error": "HTTP Error 500: Internal Server Error"
+  "error": "HTTP Error 500: Internal Server Error",
+  "body": "{\"error\":{\"message\":\"Invalid OAuth 2.0 Access Token\",\"type\":\"MLYApiException\",\"code\":190,\"error_data\":{},\"fbtrace_id\":\"AJksV8y7RsCYpBVJH8C2t25\"}}"
  },
  {
   "place": "富山駅前",
-  "error": "HTTP Error 500: Internal Server Error"
+  "error": "HTTP Error 500: Internal Server Error",
+  "body": "{\"error\":{\"message\":\"Invalid OAuth 2.0 Access Token\",\"type\":\"MLYApiException\",\"code\":190,\"error_data\":{},\"fbtrace_id\":\"AinVZztH6EmKObs0YX20p0A\"}}"
  },
  {
   "place": "福井駅前",
-  "error": "HTTP Error 500: Internal Server Error"
+  "error": "HTTP Error 500: Internal Server Error",
+  "body": "{\"error\":{\"message\":\"Invalid OAuth 2.0 Access Token\",\"type\":\"MLYApiException\",\"code\":190,\"error_data\":{},\"fbtrace_id\":\"AEFiT6vlpWtQdox1dg24STP\"}}"
  },
  {
   "place": "新潟 ぽんしゅ館",
-  "error": "HTTP Error 500: Internal Server Error"
+  "error": "HTTP Error 500: Internal Server Error",
+  "body": "{\"error\":{\"message\":\"Invalid OAuth 2.0 Access Token\",\"type\":\"MLYApiException\",\"code\":190,\"error_data\":{},\"fbtrace_id\":\"AZdTBIVM16jgJtgTmYJFin2\"}}"
  }
 ]
