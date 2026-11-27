@@ -1,0 +1,17 @@
+name: probe
+on:
+  push:
+    paths: ["scripts/probe_events.py"]
+permissions:
+  contents: write
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python scripts/probe_events.py
+      - run: |
+          git config user.name github-actions
+          git config user.email actions@github.com
+          git add probe_out && git commit -m "probe output" || true
+          git pull --rebase && git push || true
