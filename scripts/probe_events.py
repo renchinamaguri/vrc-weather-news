@@ -22,5 +22,6 @@ for k,base in SITES.items():
 for name,u in {"niigata_city_event":"https://www.city.niigata.lg.jp/shisei/seisaku/it/open-data/opendata-kankou/od-event.html",
                "niigata_insight":"https://niigata.insight-lab.co.jp/niigata-open-data"}.items():
     out[name]=get(u).decode("utf-8","replace")[:20000]
+import os; os.makedirs("probe_out",exist_ok=True)
 json.dump(out,open("probe_out/events.json","w"),ensure_ascii=False,indent=1)
 print({k:(len(v) if isinstance(v,list) else v[:80]) for k,v in out.items()})
