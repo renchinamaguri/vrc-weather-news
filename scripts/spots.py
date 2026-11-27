@@ -24,7 +24,7 @@ GSI_LAYERS = {  # 種類: (URL, ズーム, 出典の表記)
     "std": ("https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png", 16, "地図: 地理院タイル 標準地図(国土地理院)"),
     "photo": ("https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg", 16, "航空写真: 地理院タイル 全国最新写真(国土地理院)"),
 }
-IMG_VERSION = "v3"  # 画像の作り方を変えたら上げる(キャッシュを作り直す)
+IMG_VERSION = "v4"  # 画像の作り方を変えたら上げる(キャッシュを作り直す)
 COMMONS_API = "https://commons.wikimedia.org/w/api.php"
 WIKIDATA_API = "https://www.wikidata.org/w/api.php"
 OK_LICENSES = ("cc by", "cc0", "public domain", "pd", "cc-by")
@@ -294,7 +294,7 @@ def build_image(s: dict, fetch=_http) -> tuple:
         except Exception as e:
             print("WARN commons", s["name"], e, file=sys.stderr)
     if photo is None:
-        layer = "photo" if s["kind"] == "sight" else "std"
+        layer = "photo"
         photo, credit = gsi_map(s["lat"], s["lon"], fetch, layer), GSI_LAYERS[layer][2]
     tex = Image.new("RGB", (TEX_W, PHOTO_H), (255, 255, 255))
     tex.paste(photo, (0, 0))
