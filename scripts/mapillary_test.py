@@ -28,3 +28,4 @@ for key, name, lat, lon in PLACES:
 json.dump(res, open("test_out/result.json", "w"), ensure_ascii=False, indent=1)
 print(json.dumps(res, ensure_ascii=False, indent=1))
 # rerun2
+# rerun3
