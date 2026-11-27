@@ -1,0 +1,57 @@
+[
+ {
+  "place": "金沢 兼六園",
+  "candidates": 103,
+  "found": 1,
+  "id": "137325398669603",
+  "dist_m": 94,
+  "angle_off": 1
+ },
+ {
+  "place": "高岡 大仏",
+  "candidates": 152,
+  "found": 0
+ },
+ {
+  "place": "福井 東尋坊",
+  "candidates": 164,
+  "found": 1,
+  "id": "877468859468650",
+  "dist_m": 102,
+  "angle_off": 5
+ },
+ {
+  "place": "新潟 弥彦神社",
+  "candidates": 179,
+  "found": 0
+ },
+ {
+  "place": "金沢 近江町市場",
+  "candidates": 121,
+  "found": 1,
+  "id": "922531581704048",
+  "dist_m": 59,
+  "angle_off": 4
+ },
+ {
+  "place": "富山駅前",
+  "candidates": 80,
+  "found": 1,
+  "id": "1001998358213238",
+  "dist_m": 17,
+  "angle_off": 4
+ },
+ {
+  "place": "福井駅前",
+  "candidates": 31,
+  "found": 1,
+  "id": "1241368039893271",
+  "dist_m": 48,
+  "angle_off": 2
+ },
+ {
+  "place": "新潟 ぽんしゅ館",
+  "candidates": 117,
+  "found": 0
+ }
+]
