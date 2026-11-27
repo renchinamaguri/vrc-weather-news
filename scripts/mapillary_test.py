@@ -10,12 +10,14 @@ def get(url):
     return urllib.request.urlopen(r, timeout=30).read()
 res = []
 for key, name, lat, lon in PLACES:
-    q = urllib.parse.urlencode({"fields": "id,thumb_1024_url,captured_at,creator,compass_angle,geometry",
-                                "closeto": f"{lon},{lat}", "radius": 50, "limit": 5})
+    d0 = 0.0005
+    q = urllib.parse.urlencode({"fields": "id,thumb_1024_url,captured_at,compass_angle",
+                                "bbox": f"{lon-d0},{lat-d0},{lon+d0},{lat+d0}", "limit": 5})
     try:
         d = json.loads(get("https://graph.mapillary.com/images?" + q)).get("data", [])
     except Exception as e:
-        res.append({"place": name, "error": str(e)}); continue
+        body = e.read().decode()[:200] if hasattr(e, "read") else ""
+        res.append({"place": name, "error": str(e), "body": body}); continue
     if not d:
         res.append({"place": name, "found": 0}); continue
     it = d[0]
