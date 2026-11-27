@@ -1,9 +1,9 @@
 import json, os, sys, urllib.request, urllib.parse
 TOKEN = os.environ["MAPILLARY_TOKEN"]
-PLACES = [("kanazawa", "金沢 近江町市場", 36.57150, 136.65890),
-          ("toyama", "富山駅前", 36.70150, 137.21350),
-          ("fukui", "福井駅前", 36.06200, 136.22300),
-          ("niigata", "新潟 ぽんしゅ館", 37.91200, 139.06200)]
+PLACES = [("s_kenrokuen", "金沢 兼六園", 36.56210, 136.66270),
+          ("s_takaoka", "高岡 大仏", 36.74890, 137.01600),
+          ("s_tojinbo", "福井 東尋坊", 36.23710, 136.12590),
+          ("s_yahiko", "新潟 弥彦神社", 37.70600, 138.82800)]
 os.makedirs("test_out", exist_ok=True)
 def get(url):
     r = urllib.request.Request(url, headers={"Authorization": "OAuth " + TOKEN})
@@ -12,7 +12,7 @@ import re
 print("token shape:", len(TOKEN), "parts:", len(TOKEN.split("|")), "starts MLY|:", TOKEN.startswith("MLY|"), "has space/newline:", bool(re.search(r"\s", TOKEN)), "lens:", [len(x) for x in TOKEN.split("|")])
 res = []
 for key, name, lat, lon in PLACES:
-    d0 = 0.0005
+    d0 = 0.001
     q = urllib.parse.urlencode({"fields": "id,thumb_1024_url,captured_at,compass_angle",
                                 "bbox": f"{lon-d0},{lat-d0},{lon+d0},{lat+d0}", "limit": 5, "access_token": TOKEN})
     try:
