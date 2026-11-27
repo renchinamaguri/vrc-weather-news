@@ -1,0 +1,18 @@
+[
+ {
+  "place": "金沢 近江町市場",
+  "error": "HTTP Error 500: Internal Server Error"
+ },
+ {
+  "place": "富山駅前",
+  "error": "HTTP Error 500: Internal Server Error"
+ },
+ {
+  "place": "福井駅前",
+  "error": "HTTP Error 500: Internal Server Error"
+ },
+ {
+  "place": "新潟 ぽんしゅ館",
+  "error": "HTTP Error 500: Internal Server Error"
+ }
+]
